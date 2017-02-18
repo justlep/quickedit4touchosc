@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>QuickEdit for TouchOSC</title><!-- Project version: 0.0.9 -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="Lennart Pegel">
+    <meta name="description" content="QuickEdit is a non-official online editor for TouchOSC layout files">
+    <meta name="keywords" content="Editor, TouchOSC, Multiple, Control, MIDI, OSC, Config, Configuration, Setup, Visual, Layout, Properties, Channels">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="resources/images/favicon.png" size="32x32" type="image/png">
+    <link rel="stylesheet" href="resources/css/style.min.css">
+  </head>
+  <body>
+    <header class="header">
+      <h1 class="header__headline"><a href="http://justlep.github.io/quickedit4touchosc/">QuickEdit for TouchOSC</a><span class="header__build">v0.0.9, built <span data-bind="text: prettyTimecode(1487433523349)"></span></span></h1>
+      <!-- ko with: sourceFileHolder-->
+      <label for="touchosc__file" data-bind="css: {'file__label--empty': !file()}" class="file__label file__label--empty"><span data-bind="text: file() ? ('File: ' + file()) : 'Click here to load a touchosc file...'">Click here to load a touchosc file...</span>
+        <input id="touchosc__file" type="file" accept=".touchosc,.zip" data-bind="value: file" class="file__input">
+      </label>
+      <!-- /ko-->
+    </header>
+    <article>
+      <ul data-bind="css: {'tabs__list--enabled': layoutHolder.hasLayout, 'tabs__list--dev': isDevModeEnabled}" class="tabs__list">
+        <li data-bind="css: {'tabs__list--active': infoMode}, click: infoMode" class="tabs__tab--info">About</li>
+        <li data-bind="css: {'tabs__list--active': detailsMode}, click: detailsMode">Layout Details</li>
+        <li data-bind="css: {'tabs__list--active': encodingCheckMode}, click: encodingCheckMode">Encoding-Check</li>
+        <li data-bind="css: {'tabs__list--active': visualMode}, click: visualMode">Editor</li>
+        <li data-bind="css: {'tabs__list--active': exportMode}, click: exportMode">Export</li>
+        <li data-bind="css: {'tabs__list--active': sourceXmlMode}, click: sourceXmlMode" class="tabs__tab--dev tabs__tab--devFirst">Source XML</li>
+        <li data-bind="css: {'tabs__list--active': jsonMode}, click: jsonMode" class="tabs__tab--dev">JSON</li>
+        <li data-bind="css: {'tabs__list--active': targetXmlMode}, click: targetXmlMode" class="tabs__tab--dev">Target XML</li>
+      </ul>
+      <div class="tabs__content"><!-- ko if: infoMode -->
+        <div class="info">
+          <div class="info__block">
+            <h2 class="info__headline">What is QuickEdit?</h2>
+            <p>QuickEdit is an online, non-official property editor for <a href="http://hexler.net/docs/touchosc" target="_blank">TouchOSC</a> layout files.</p>
+            <p>
+              Its main purpose is allow modifying <strong>multiple controls, tabs and MIDI properties</strong> in a single step, including automated counters.
+              This way, you can finalize the MIDI and OSC configuration of existing layouts in a snap.
+              If you ever tried to setup MIDI notes for a 6x16 MultiToggle matrix or change the MIDI channel for all controls in your layout,
+              then you know the problem ;-)
+              
+            </p>
+            <p>
+              <button data-bind="click: loadDemo" class="info__demoBtn">Play with Example Layout</button>
+            </p>
+          </div>
+          <div class="info__block">
+            <h2 class="info__headline">What is it NOT?</h2>
+            <p>
+              QuickEdit is <b>not</b> provided by or related to hexler.net.
+              It is not meant to be a replacement for their official TouchOSC editor. QuickEdit is targeted at modifying
+              attributes of existing controls and tabs, but <strong>won't add, move or delete any elements</strong>.
+              
+            </p>
+            <h2 class="info__headline"><br/>No guarantee - use with care!</h2>
+            <p>
+              Make sure you don't accidentally overwrite your original .touchosc files after editing.
+              There is unfortunately no official documentation on the .touchosc layout file format, so the exported files might
+              not be working as expected anymore.
+              
+            </p>
+          </div>
+          <div class="info__block">
+            <h2 class="info__headline">How to use</h2>
+            <p>
+              Just open any *.touchosc file using the button at the top, then immediately start editing.
+              Everything happens inside your browser. Nothing is uploaded to the server.
+              When you're done, export your modified .touchosc file (i.e. save it to your local disk), and use the official editor to sync it to your touch device.
+              
+            </p>
+          </div>
+          <div class="info__block">
+            <h2 class="info__headline">What's more</h2>
+            <p><b>TouchOSC</b> is a registered trademark of <a href="http://hexler.net/software/touchosc" target="_blank">Hexler.net</a></p>
+            <p>This software is provided "as is", without warranties of any kind.</p>
+            <p>A big thank you to all authors of the JS libraries used in this project,
+              <ul class="info__libs">
+                <li><a target="_blank" href="http://knockoutjs.com/">KnockoutJS</a></li>
+                <li><a target="_blank" href="https://github.com/robatwilliams/knockout-handybits">Knockout-Handybits</a></li>
+                <li><a target="_blank" href="https://github.com/brianmhunt/knockout-fast-foreach">Knockout-FastForEach</a></li>
+                <li><a target="_blank" href="https://github.com/abdmob/x2js">X2JS</a></li>
+                <li><a target="_blank" href="http://gildas-lormeau.github.com/zip.js/">zip.js</a></li>
+                <li><a target="_blank" href="http://requirejs.org">RequireJS</a></li>
+                <li><a target="_blank" href="http://underscorejs.org/">Underscore</a></li>
+                <li><a target="_blank" href="http://jquery.com/">jQuery</a></li>
+                <li><a target="_blank" href="http://touchpunch.furf.com/">jQuery TouchPunch</a></li>
+                <li><a target="_blank" href="http://gruntjs.com/">Grunt</a></li>
+                <li><a target="_blank" href="https://www.npmjs.com/package/jade">Jade (aka Pug)</a></li>
+                <li><a target="_blank" href="http://lesscss.org/">Less</a></li>
+                <li><a target="_blank" href="http://expressjs.com/">Express</a></li>
+                <li>and all not named here.</li>
+              </ul>
+            </p>
+          </div>
+        </div><!-- /ko -->
+        <div style="display:none" data-bind="visible: sourceFileHolder.xml"><!-- ko if: detailsMode -->
+          <div class="details well">
+            <div class="well__block">
+              <table class="details__table">
+                <tbody>
+                  <!-- ko with: $root.dimensions-->
+                  <tr>
+                    <th>Dimensions:</th>
+                    <td data-bind="text: layoutWidth() + ' x ' + layoutHeight()"></td>
+                  </tr>
+                  <tr>
+                    <th>Displayed Orientation:</th>
+                    <td data-bind="text: isLandscape() ? 'Landscape' : 'Portrait'"></td>
+                  </tr>
+                  <!-- /ko-->
+                  <!-- ko with: layoutHolder.layout()-->
+                  <tr>
+                    <th>XML Orientation</th>
+                    <td data-bind="text: _orientation"></td>
+                  </tr>
+                  <tr>
+                    <th>Mode</th>
+                    <td data-bind="text: _mode"></td>
+                  </tr>
+                  <tr>
+                    <th>Custom Width</th>
+                    <td data-bind="text: $data._w || '-'"></td>
+                  </tr>
+                  <tr>
+                    <th>Custom Height</th>
+                    <td data-bind="text: $data._h || '-'"></td>
+                  </tr>
+                  <!-- /ko-->
+                  <tr>
+                    <th>base64 names:</th>
+                    <td data-bind="text: $root.sourceFileHolder.encodingInfo().namesNeedDecoding ? 'probably' : 'unlikely'"></td>
+                  </tr>
+                  <tr>
+                    <th>base64 texts:</th>
+                    <td data-bind="text: $root.sourceFileHolder.encodingInfo().textsNeedDecoding ? 'probably' : 'unlikely'"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div><!-- /ko -->
+          <!-- ko if: encodingCheckMode -->
+          <div data-bind="with: encodingCheck" class="encodingCheck">
+            <h2 class="encodingCheck__headline">
+              Encoding issues in touchosc files may cause certain property values to look weird.
+              <p>Such `suspicious` values are listed here together with possible fixes.</p>
+              <p>If a suggested fix looks right, click it and press `Apply selected fixes` when you finished the list.</p>
+              
+            </h2>
+            <div>
+              <!-- ko if: suspiciousProperties().length-->
+              <table class="encodingCheck__table">
+                <thead>
+                  <tr>
+                    <th>Element<br/>Type</th>
+                    <th>Property</th>
+                    <th>Suspicious<br>Value</th>
+                    <th>Potential<br>fix(es)</th>
+                  </tr>
+                </thead>
+                <tbody data-bind="click: onClick, fastForEach: suspiciousProperties" class="encodingCheck__suspicious">
+                  <tr>
+                    <td data-bind="text: typeName"></td>
+                    <td data-bind="text: propName"></td>
+                    <td data-bind="with: originalValue">
+                      <div data-bind="text: $data, css: {'encodingCheck__originalValue--fixed': $data !== $parent.valueToUse()}" class="encodingCheck__originalValue"></div>
+                    </td>
+                    <td data-bind="fastForEach: fixes">
+                      <div data-bind="text: $data, css: {'encodingCheck__fix--selected': $data === $parent.valueToUse()}" class="encodingCheck__fix"></div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody>
+                  <tr>
+                    <td colspan="4" style="text-align: right" class="encodingCheck__applyTd">
+                      <button data-bind="click: applySelectedFixes">Apply selected fixes</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- /ko-->
+            </div>
+            <div>
+              <!-- ko if: fixedProperties().length-->
+              <table class="encodingCheck__table encodingCheck__table--fixes">
+                <caption>Applied Fixes</caption>
+                <thead>
+                  <tr>
+                    <th>Element<br/>Type</th>
+                    <th>Property</th>
+                    <th>Suspicious<br>Value</th>
+                    <th>Replaced with fixed value</th>
+                  </tr>
+                </thead>
+                <tbody data-bind="fastForEach: fixedProperties" class="encodingCheck__fixed">
+                  <tr>
+                    <td data-bind="text: typeName"></td>
+                    <td data-bind="text: propName"></td>
+                    <td data-bind="with: originalValue">
+                      <div data-bind="text: $data" class="encodingCheck__originalValue encodingCheck__originalValue--fixed"></div>
+                    </td>
+                    <td>
+                      <div data-bind="text: valueToUse" class="encodingCheck__fix encodingCheck__fix--applied"></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- /ko-->
+            </div>
+          </div><!-- /ko -->
+          <!-- ko if: visualMode -->
+          <div data-bind="with: visual.isEnabled() &amp;&amp; visual" class="visual">
+            <div class="tabs__submenu">
+                  <div class="roundCheckboxWrap">
+                    <input id="cbShowTooltips" type="checkbox" data-bind="checked: config.isTooltipEnabled" class="roundCheckbox">
+                    <label for="cbShowTooltips"></label>
+                  </div>
+                  <label for="cbShowTooltips">Show Tooltips</label>
+                  <div class="roundCheckboxWrap">
+                    <input id="cbMarkEmptyLabel" type="checkbox" data-bind="checked: config.markEmptyLabels" class="roundCheckbox">
+                    <label for="cbMarkEmptyLabel"></label>
+                  </div>
+                  <label for="cbMarkEmptyLabel">Mark empty labels</label><span data-bind="with: config" class="visual__zoom">Zoom:
+                <button data-bind="click: zoomOut">-</button>
+                <button data-bind="click: zoomReset, text: (zoom() * 100) + '%'" title="Reset to 100%"></button>
+                <button data-bind="click: zoomIn">+</button></span><span data-bind="with: $root.controlEditor.midiEditor" class="visual__defaultChannel">
+                <label>Default Channel:
+                  <select data-bind="options: midiChannelOptions, value: defaultMidiChannel"></select>
+                </label><span data-bind="with: defaultMidiChannel">
+                  <button data-bind="click: $root.setGlobalChannel" title="Updates the MIDI channel of all (existing) controls">Apply to controls</button></span></span>
+            </div>
+            <ul data-bind="fastForEach: $root.layoutHolder.tabPages" class="visual__tabPages">
+              <li data-bind="click: $parent.currentTabPage, css: {'visual__tabPage--active': $data === $parent.currentTabPage()}, text: $data._name || ($index() + 1)" class="visual__tabPage"></li>
+            </ul>
+            <div data-bind="svgContainer: true" class="svg__container"><!-- ko template: {name: 'svgTemplate', templateEngine: ko.svgTemplateEngine.instance} --><!-- /ko --></div>
+            <div class="visual__howto"><span data-bind="ifnot: $root.controlEditor.isTabPageMode">
+                Select by click + drag / touch + move.<br>
+                Hold [Ctrl] and drag to add more to a selection. [Ctrl]+click to toggle.</span><span data-bind="if: $root.controlEditor.isTabPageMode">
+                Selections are <strong>disabled in Edit Tabs</strong> mode.
+                </span></div>
+            <div id="controlTooltip" data-bind="visible: controlTooltip, with: controlTooltip" class="controlTooltip noselect">
+              <div><span data-bind="text: typeName" class="controlTooltip__type"></span><span data-bind="text: props._name || ''" class="controlTooltip__name quoted"></span></div>
+              <pre data-bind="text: JSON.stringify(props, null, 2)" class="controlTooltip__json"></pre>
+            </div>
+          </div><!-- /ko -->
+          <!-- ko if: exportMode -->
+          <div class="export well">
+            <div class="well__block well__block--full">
+              <div data-bind="if: layoutHolder.hasLayout" class="export__download">
+                <label><strong>Filename:</strong>
+                  <input type="text" data-bind="textInput: exportFilename" class="export__filename">
+                  <button data-bind="click: startExport" class="export__exportBtn">Export now</button><a id="hiddenExportLink" style="display:none" data-bind="attr: {download: exportFilename, href: exportUrl}">DL</a>
+                </label>
+              </div>
+            </div>
+          </div><!-- /ko -->
+          <!-- ko if: sourceXmlMode() || targetXmlMode() || jsonMode() -->
+          <div class="source">
+            <!-- ko with: sourceXmlMode() && sourceFileHolder.xml()-->
+            <textarea data-bind="text: $data" autocorrect="off" spellcheck="false" readonly="readonly" class="source__code"></textarea>
+            <!-- /ko-->
+            <!-- ko if: jsonMode() && layoutHolder.hasLayout()-->
+            <textarea data-bind="text: JSON.stringify(layoutHolder.getJsonForExport(), null, 2)" autocorrect="off" spellcheck="false" class="source__code"></textarea>
+            <!-- /ko-->
+            <!-- ko if: targetXmlMode() && layoutHolder.hasLayout()-->
+            <textarea data-bind="text: getXmlForExport()" autocorrect="off" spellcheck="false" readonly="readonly" class="source__code"></textarea>
+            <!-- /ko-->
+          </div><!-- /ko -->
+          <!-- ko if: tableMode -->
+          <div class="table well">
+            <div class="well__block">
+              <table data-bind="fastForEach: layoutHolder.tabPages" class="table__table">
+                <thead>
+                  <tr class="table__tabName">
+                    <th colspan="3" title="Jump to this page in the edit tab" data-bind="click: $root.gotoTabPage">Tabpage: <!-- ko text: ($index()+1) --><!-- /ko --></th>
+                  </tr>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Text</th>
+                  </tr>
+                </thead>
+                <tbody data-bind="fastForEach: control">
+                  <!-- ko if: $root.controlFilter.isControlVisible($data)-->
+                  <tr>
+                    <td data-bind="text: typeName"></td>
+                    <td>
+                      <div data-bind="style: {background: colorCode || 'transparent'}" class="table__colorBox"></div><span data-bind="text: props._name"></span>
+                    </td>
+                    <td data-bind="text: props._text"></td>
+                  </tr>
+                  <!-- /ko-->
+                </tbody>
+              </table>
+            </div>
+          </div><!-- /ko -->
+        </div>
+        <div data-bind="visible: error, text: error" style="color: red;" class="error"></div>
+      </div>
+      <div data-module-name="AMD/QuickEditApp" class="js-module"></div>
+      <script id="svgTemplate" type="text/html">
+        <svg data-bind="svgRoot: true, if: $root.layoutHolder.needsRedraw, css: {'svg__root--tabsEditMode': $root.controlEditor.isTabPageMode}" class="svg__root">
+          <text x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" dominant-baseline="middle" class="svg__editModeNotice">&#x2716;</text>
+          <g data-bind="svgTabsAreaGroup: true" class="svg__tabsAreaGroup">
+            <svg data-bind="svgTabsArea: true, fastForEach: $root.layoutHolder.tabPages" class="svg__tabsArea">
+              <rect data-bind="svgTab: true, click: $root.visual.currentTabPage, css: {'svg__tab--selected': $data === $root.visual.currentTabPage()}" class="svg__tab"></rect>
+            </svg>
+          </g>
+          <g data-bind="svgControlsArea: true, fastForEach: visibleControlsInCurrentTab" class="svg__controlsArea">
+            <svg data-bind="attr: {x: props._x, y: props._y, width: props._w, height: props._h}" class="svg__controlWrap">
+              <g data-bind="template: {name: $data.svgTemplateId, templateEngine: ko.svgTemplateEngine.instance}"></g>
+              <rect x="0" y="0" width="100%" height="100%" data-bind="attr: {id: 'svgSelectable_' + $data.uid}, css: {'svg__selectable--selected': $root.controlSelection.isControlSelected($data)}" class="svg__selectable"></rect>
+            </svg>
+          </g>
+        </svg>
+      </script>
+      
+      
+            <script id="controlSvgTpl__1" type="text/html" data-typepattern="" class="svg__controlTemplate">
+              <rect x="0" y="0" width="100%" height="100%" data-bind="style: {fill: colorCode}" class="svg__control"></rect>
+            </script>
+            <script id="controlSvgTpl__2" type="text/html" data-typepattern="^(label|battery|time)" class="svg__controlTemplate">
+              <rect x="0" y="0" rx="4" ry="4" width="100%" height="100%" data-bind="style: {fill: ($data.props._background ? '#231C1C' : 'transparent'), 'stroke-width': 1, stroke: ($data.props._outline ? colorCode : 'transparent')}, css: {'svg__label--markedEmpty': (!$data.props._text &amp;&amp; !$data.props._background &amp;&amp; !$data.props._outline &amp;&amp; $parent.config.markEmptyLabels())}" class="svg__control"></rect>
+              <text x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" dominant-baseline="middle" data-bind="svgLabel: true, text: (($data.getFixText &amp;&amp; $data.getFixText()) || $data.props._text), attr: {'font-size': $data.props._size, fill: colorCode}"></text>
+            </script>
+            <script id="controlSvgTpl__3" type="text/html" data-typepattern="^(toggle|multitoggle)" class="svg__controlTemplate">
+              <rect x="0" y="0" width="100%" height="100%" data-bind="style: {fill: '#444', opacity: 0.5}, attr: {rx: 5, ry: 5, stroke: colorCode, 'stroke-width': 2}" class="svg__control"></rect>
+              <!-- ko if: $data.needsGrid-->
+              <path data-bind="multiDivider: true, attr: {stroke: colorCode}" fill="none" style="stroke-width: 2px"></path>
+              <!-- /ko-->
+            </script>
+            <script id="controlSvgTpl__4" type="text/html" data-typepattern="^(push|multipush)" class="svg__controlTemplate">
+              <rect x="0" y="0" width="100%" height="100%" data-bind="style: {fill: colorCode}, attr: {rx: 5, ry: 5}" class="svg__control"></rect>
+              <!-- ko if: $data.needsGrid-->
+              <path data-bind="multiDivider: true" fill="none" style="stroke: #222; stroke-width: 2px"></path>
+              <!-- /ko-->
+            </script>
+            <script id="controlSvgTpl__5" type="text/html" data-typepattern="^(fader|multifader)" class="svg__controlTemplate">
+              <rect x="0" y="0" width="100%" height="100%" data-bind="style: {fill: '#444', opacity: 0.5}, attr: {rx: 3, ry: 3, stroke: colorCode, 'stroke-width': 2}" class="svg__control"></rect>
+              <rect rx="3" ry="3" data-bind="attr: {fill: colorCode}, faderHandle: false"></rect>
+              <path data-bind="faderHandle: true" fill="none" style="stroke: #222; stroke-width: 2px"></path>
+            </script>
+            <script id="controlSvgTpl__6" type="text/html" data-typepattern="^xy|multixy" class="svg__controlTemplate">
+              <rect x="0" y="0" width="100%" height="100%" data-bind="style: {fill: '#444', opacity: 0.5}, attr: {rx: 3, ry: 3, stroke: colorCode, 'stroke-width': 2}" class="svg__control"></rect>
+              <line stroke-width="2" y1="0" y2="100%" data-bind="attr: {stroke: colorCode, x1: ($data.props._inverted_x ? '90%' : '10%'), x2: ($data.props._inverted_x ? '90%' : '10%')}"></line>
+              <line stroke-width="2" x1="0" x2="100%" data-bind="attr: {stroke: colorCode, y1: ($data.props._inverted_y ? '90%' : '10%'), y2: ($data.props._inverted_y ? '90%' : '10%')}"></line>
+              <circle r="5%" data-bind="attr: {r: ($data.props._type==='multixy' ? '4%' : '5%'), fill: colorCode, cx: ($data.props._inverted_x? '90%' : '10%'), cy: ($data.props._inverted_y? '90%' : '10%')}"></circle>
+              <!-- ko if: ($data.props._type==="multixy")-->
+              <circle r="7%" fill="transparent" stroke-width="1" data-bind="attr: {stroke: colorCode, cx: ($data.props._inverted_x? '90%' : '10%'), cy: ($data.props._inverted_y? '90%' : '10%')}"></circle>
+              <!-- /ko-->
+            </script>
+            <script id="controlSvgTpl__7" type="text/html" data-typepattern="^encoder" class="svg__controlTemplate">
+              <circle cx="50%" cy="50%" r="50%" fill="#333" stroke-width="4" data-bind="attr: {stroke: colorCode}" class="svg__control svg__encoder"></circle>
+              <circle cx="50%" cy="50%" r="40%" stroke-width="1" fill="transparent" data-bind="attr: {stroke: colorCode}" class="svg__control"></circle>
+            </script>
+            <script id="controlSvgTpl__8" type="text/html" data-typepattern="^rotary" class="svg__controlTemplate">
+              <circle cx="50%" cy="50%" r="50%" stroke="#aaa" stroke-width="2" stroke-dasharray="5,1" data-bind="attr: {fill: colorCode}" class="svg__control"></circle>
+              <path stroke="#000" fill="transparent" opacity="0.4" data-bind="rotaryHandle:true"></path>
+              <line x1="50%" y1="50%" stroke-width="5" stroke="#fff" data-bind="rotaryHandle:false"></line>
+            </script>
+            <script id="controlSvgTpl__9" type="text/html" data-typepattern="^led" class="svg__controlTemplate">
+              <circle cx="50%" cy="50%" r="50%" data-bind="attr: {fill: colorCode}" class="svg__control svg__led"></circle>
+            </script>
+      <script id="controlEditorTabsTpl" type="text/html">
+        <div class="controlEditor__tabs"><a data-bind="event: {mousedown: isTabPageMode.toggleOff}, css: {'controlEditor__tab--active': !isTabPageMode()}" class="controlEditor__tab">Edit Controls<span data-bind="text: selection.controls().length" class="controlEditor__count inBrackets"></span></a><a data-bind="event: {mousedown: isTabPageMode.toggleOn}, css: {'controlEditor__tab--active': isTabPageMode}" class="controlEditor__tab">Edit Tabs<span data-bind="text: selection.controls().length" class="controlEditor__count inBrackets"></span></a></div>
+      </script><!-- ko with: $root.controlEditor -->
+          <div style="display: none" data-bind="visible: isVisible" data-module-name="AMD/util/Draggable" data-handle-selector=".panel__headline" class="controlEditor panel js-module">
+            <div data-bind="dblClick: isOpen.toggle" class="panel__headline"><!-- ko template: {name: "controlEditorTabsTpl"} --><!-- /ko --><span class="fa-move"></span></div>
+            <div data-bind="click: isOpen.toggle, css: {'fa-down-open': isOpen, 'fa-right-open': !isOpen()}" class="panel__toggle"></div>
+            <div data-bind="if: isOpen">
+              <div class="panel__content">
+                <div data-bind="visible: isEmpty" class="controlEditor__empty">Nothing selected</div>
+                <!-- ko if: !isEmpty() && tableNeedsRedraw()-->
+                <table data-bind="if: $root.layoutHolder.needsRedraw, css: {'controlEditor__table--pageTabMode': isTabPageMode}" class="controlEditor__table">
+                  <thead>
+                    <tr>
+                      <th class="controlEditor__unselectTh">&nbsp; <!-- (data-bind="click: selection.reset") &nbsp; --></th>
+                      <!-- ko if: isHighlighterEnabled-->
+                      <th data-bind="highlightControl: 'ALL'" width="1" class="controlEditor__tableHeaderCell controlEditor__highlighterCell">&nbsp;</th>
+                      <!-- /ko-->
+                      <!-- ko foreach: controlProperties-->
+                      <th class="controlEditor__tableHeaderCell">
+                        <div data-bind="text: $data.replace(/_/,' '), click: $parent.propertyEditor.editMultipleControls"></div><!-- ko template: {name: 'propertyEditorTpl', data: $parent.propertyEditor, if: $parent.propertyEditor.isEditedMultiProperty($data)} --><!-- /ko -->
+                      </th>
+                      <!-- /ko-->
+                      <!-- ko if: isMidiVisible-->
+                      <th data-bind="with: midiEditor" class="controlEditor__tableHeaderCell">
+                        <div data-bind="click: editMultiValue">Value</div><!-- ko template: {name: 'midiEditorTpl', if: mode().isMultiEditValue} --><!-- /ko -->
+                      </th>
+                      <th data-bind="with: midiEditor" class="controlEditor__tableHeaderCell">
+                        <div data-bind="click: editMultiTouch">Touch</div><!-- ko template: {name: 'midiEditorTpl', if: mode().isMultiEditTouch} --><!-- /ko -->
+                      </th>
+                      <th data-bind="with: midiEditor" class="controlEditor__tableHeaderCell">
+                        <div data-bind="click: editMultiColor">Color</div><!-- ko template: {name: 'midiEditorTpl', if: mode().isMultiEditColor} --><!-- /ko -->
+                      </th>
+                      <!-- /ko-->
+                    </tr>
+                  </thead>
+                  <tbody data-bind="click: onBodyCellClick, fastForEach: selection.controls" class="controlEditor__tableBody">
+                    <tr>
+                      <td title="deselect this control" class="controlEditor__unselectCell"></td>
+                      <!-- ko if: $parent.isHighlighterEnabled-->
+                      <td data-bind="highlightControl: true" class="controlEditor__highlighterCell"></td>
+                      <!-- /ko-->
+                      <!-- ko foreach: $parent.controlProperties-->
+                      <td data-bind="css: {'controlEditor__tableColorCell': $data==='_color', 'controlEditor__tableMultiEditedCell': $parents[1].propertyEditor.isEditedMultiProperty($data)}"><!-- ko if: ($data === '_color') --><span class="controlEditor__tableColorCellColor" data-bind="style: {background: $parent.colorCode}"></span><!-- /ko -->
+                        <!-- ko ifnot: $parents[1].propertyEditor.isEditedControlAndProperty($parent, $data)--><!-- ko text: $parent.props[$data] --><!-- /ko -->
+                        <!-- /ko-->
+                        <!-- ko if: $parents[1].propertyEditor.isEditedControlAndProperty($parent, $data)--><!-- ko template: {name: 'propertyEditorTpl', data: $parents[1].propertyEditor, if: $parents[1].propertyEditor.isVisible} --><!-- /ko -->
+                        <!-- /ko-->
+                        <!-- ko with: $parents[1].propertyEditor.isPreviewEnabled() && $parents[1].propertyEditor.isEditedMultiProperty($data) && $parents[1].propertyEditor.canSubmit() && $parents[1].propertyEditor.submittableValueMap()[$parent.uid]-->
+                        <div data-bind="text: $data" class="controlEditor__multiEditPreview"></div>
+                        <!-- /ko-->
+                      </td>
+                      <!-- /ko-->
+                      <!-- ko if: $parent.isMidiVisible-->
+                      <td data-bind="foreach: valueVars">
+                        <div class="controlEditor__midiVal"><b data-bind="text: $data, visible: $parent.valueVars.length&gt;1" class="controlEditor__midiValVar"></b><span data-bind="text: $parents[1].midiEditor.midiOrPreviewString($parent, $data)" class="controlEditor__midiValValue"></span></div><!-- ko template: {name: 'midiEditorTpl', data: $parents[1].midiEditor, if: $parents[1].midiEditor.isEditedControlVar($data, $parent)} --><!-- /ko -->
+                      </td>
+                      <td data-bind="foreach: touchVars">
+                        <div>
+                          <div class="controlEditor__midiVal"><b data-bind="text: $data, visible: $parent.touchVars.length&gt;1" class="controlEditor__midiValVar"></b><span data-bind="text: $parents[1].midiEditor.midiOrPreviewString($parent, $data)" class="controlEditor__midiValValue"></span></div><!-- ko template: {name: 'midiEditorTpl', data: $parents[1].midiEditor, if: $parents[1].midiEditor.isEditedControlVar($data, $parent)} --><!-- /ko -->
+                        </div>
+                      </td>
+                      <td data-bind="foreach: colorVars">
+                        <div>
+                          <div class="controlEditor__midiVal"><b data-bind="text: $data, visible: $parent.colorVars.length&gt;1" class="controlEditor__midiValVar"></b><span data-bind="text: $parents[1].midiEditor.midiOrPreviewString($parent, $data)" class="controlEditor__midiValValue"></span></div><!-- ko template: {name: 'midiEditorTpl', data: $parents[1].midiEditor, if: $parents[1].midiEditor.isEditedControlVar($data, $parent)} --><!-- /ko -->
+                        </div>
+                      </td>
+                      <!-- /ko-->
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- /ko-->
+                <div data-bind="visible: !isEmpty()" class="controlEditor__config"><span data-bind="ifnot: $root.controlEditor.isTabPageMode" title="Flashes selected controls to help identifying them within the selection" class="controlEditor__configItem">
+                        <div class="roundCheckboxWrap">
+                          <input id="cbEditShowHighlighter" type="checkbox" data-bind="checked: $root.controlEditor.isHighlighterEnabled" class="roundCheckbox">
+                          <label for="cbEditShowHighlighter"></label>
+                        </div>
+                        <label for="cbEditShowHighlighter">Marker</label></span><span title="Show OSC properties (scalef, scalet, osc_cs)" class="controlEditor__configItem">
+                        <div class="roundCheckboxWrap">
+                          <input id="cbEditShowOsc" type="checkbox" data-bind="checked: $root.controlEditor.isOscVisible" class="roundCheckbox">
+                          <label for="cbEditShowOsc"></label>
+                        </div>
+                        <label for="cbEditShowOsc">OSC</label></span><span data-bind="ifnot: $root.controlEditor.isTabPageMode" title="Show sort of 'non-basic' properties" class="controlEditor__configItem">
+                        <div class="roundCheckboxWrap">
+                          <input id="cbEditShowNonBasic" type="checkbox" data-bind="checked: $root.controlEditor.isNonBasicVisible" class="roundCheckbox">
+                          <label for="cbEditShowNonBasic"></label>
+                        </div>
+                        <label for="cbEditShowNonBasic">Other</label></span><span title="Show MIDI properties (Value, Touch, Color)" class="controlEditor__configItem">
+                        <div class="roundCheckboxWrap">
+                          <input id="cbEditShowMidi" type="checkbox" data-bind="checked: $root.controlEditor.isMidiVisible" class="roundCheckbox">
+                          <label for="cbEditShowMidi"></label>
+                        </div>
+                        <label for="cbEditShowMidi">MIDI</label></span><span data-bind="visible: $root.controlEditor.isMidiVisible" title="Show note names of MIDI note values" class="controlEditor__configItem">&nbsp;
+                        <div class="roundCheckboxWrap">
+                          <input id="cbEditShowNoteNames" type="checkbox" data-bind="checked: $root.controlEditor.midiEditor.isNoteNamesEnabled" class="roundCheckbox">
+                          <label for="cbEditShowNoteNames"></label>
+                        </div>
+                        <label for="cbEditShowNoteNames">Note Names</label></span></div>
+                <script id="propertyEditorTpl" type="text/html">
+                  <div data-bind="css: {'propertyEditor--multiEdit': isMultiEditMode}" class="propertyEditor"><b class="propertyEditor__mutltiHeadline">Multi-Edit</b>
+                    <form data-bind="submit: submit, enable: canSubmit" action="">
+                      <!-- ko ifnot: propInfo().isColor-->
+                      <input type="text" name="newval" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="textInput: newValue, focusAfterRender: {select: propInfo().isNumber}, event: {keyup: onKeyup}, disable: useCounterAsValue, attr: {title: useCounterAsValue() ? 'All values are calculated by the counter' : ''}" class="propertyEditor__text">
+                      <div data-bind="visible: isMultiEditMode, if: isMultiEditMode" class="propertyEditor__counter">
+                        <div title="Enables the '%C' placeholder for generating auto-numbered names" class="propertyEditor__counterToggle">
+                              <div class="roundCheckboxWrap">
+                                <input id="cbPropEditUseCounter" type="checkbox" data-bind="checked: useCounter" class="roundCheckbox">
+                                <label for="cbPropEditUseCounter"></label>
+                              </div>
+                              <label for="cbPropEditUseCounter">Counter %C</label>
+                        </div>
+                        <!-- ko if: useCounter-->
+                        <table>
+                          <tr>
+                            <th>Start</th>
+                            <th>Step</th>
+                            <th data-bind="visible: propInfo().isString">Digits</th>
+                          </tr>
+                          <tr>
+                            <td>
+                              <input type="text" data-bind="countByArrowUpDown: true, textInput: counterStart, focusAfterRender: {select:true}" class="propertyEditor__counterStart">
+                            </td>
+                            <td>
+                              <select data-bind="value: counterStep, options: counterStepOptions" class="propertyEditor__counterStep"></select>
+                            </td>
+                            <td data-bind="visible: propInfo().isString">
+                              <select data-bind="value: counterDigits, options: counterDigitsOptions" class="propertyEditor__counterDigits"></select>
+                            </td>
+                          </tr>
+                        </table>
+                        <!-- /ko-->
+                      </div>
+                      <button type="submit" data-bind="enable: canSubmit, css: {'propertyEditor__ok--disabled': !canSubmit()}" class="propertyEditor__ok">Save</button>
+                      <!-- /ko-->
+                      <!-- ko if: propInfo().isColor-->
+                      <ul data-bind="foreach: colorOptions" class="propertyEditor__colors">
+                        <li data-bind="click: $parent.setColor, style: {background: $data}"></li>
+                      </ul>
+                      <!-- /ko-->
+                      <button type="button" data-bind="click: reset" class="propertyEditor__cancel">Cancel</button>
+                      <!-- ko if: isMultiEditMode() && !propInfo().isColor-->
+                      <div class="propertyEditor__preview">
+                            <div class="roundCheckboxWrap">
+                              <input id="cbPropEditPreview" type="checkbox" data-bind="checked: isPreviewEnabled" class="roundCheckbox">
+                              <label for="cbPropEditPreview"></label>
+                            </div>
+                            <label for="cbPropEditPreview">Preview</label>
+                      </div>
+                      <!-- /ko-->
+                    </form>
+                  </div>
+                </script>
+                <script id="midiEditorTpl" type="text/html">
+                  <div data-bind="css: {'midiEditor--singleEdit': mode().isSingleEdit, 'midiEditor--multiEdit': mode().isMultiEdit}" class="midiEditor">
+                    <form data-bind="submit: submit, enable: canSubmit" action="">
+                      <select data-bind="options: messageTypeOptions, optionsText: 'name', value: messageType" class="midiEditor__msgTypeSelect"></select>
+                      <div data-bind="with: messageType">
+                        <div data-bind="ifnot: hasFixChannel, visible: !hasFixChannel, css: {'midiEditor__group--excluded': !$parent.includeChannel()}" class="midiEditor__group">
+                          <label class="midiEditor__label">
+                            <input type="checkbox" data-bind="checked: $parent.includeChannel" class="midiEditor__include">Channel:
+                          </label><span class="midiEditor__groupValue">
+                            <select data-bind="options: channelOptions, value: $parent.channel, optionsText: function(ch) {return 'Ch ' + ch}" class="midiEditor__channel"></select></span><span class="midiEditor__autoIncContainer">
+                            <select data-bind="options: $parent.autoIncChannelOptions, value: $parent.autoIncChannel, optionsText: $parent.formatAutoIncOption"></select></span>
+                        </div>
+                        <div data-bind="ifnot: hasFixData1, visible: !hasFixData1, css: {'midiEditor__group--excluded': !$parent.includeData1()}" class="midiEditor__group">
+                          <label class="midiEditor__label">
+                            <input type="checkbox" data-bind="checked: $parent.includeData1" class="midiEditor__include">Data1:
+                            <!-- ko if: data1IsNote || data1IsCC--><span data-bind="text: data1IsCC ? 'CC number' : $root.midiUtil.getNoteName($parent.data1()) || 'invalid'" class="midiEditor__noteName"></span>
+                            <!-- /ko-->
+                          </label><span class="midiEditor__groupValue">
+                            <input type="text" maxlength="5" title="MIDI data1" data-bind="countByArrowUpDown: true, textInput: $parent.data1" class="midiEditor__text"></span><span class="midiEditor__autoIncContainer">
+                            <select data-bind="options: $parent.autoIncOptions, value: $parent.autoIncData1, optionsText: $parent.formatAutoIncOption, valueAllowUnset: true"></select></span>
+                        </div>
+                        <div data-bind="ifnot: hasFixData2f, visible: !hasFixData2f, css: {'midiEditor__group--excluded': !$parent.includeData2f()}" class="midiEditor__group">
+                          <label class="midiEditor__label">
+                            <input type="checkbox" data-bind="checked: $parent.includeData2f" class="midiEditor__include">Data2f:
+                          </label><span class="midiEditor__groupValue">
+                            <input type="text" maxlength="5" title="MIDI data2 (min)" data-bind="countByArrowUpDown: true, textInput: $parent.data2f" class="midiEditor__text"></span><span class="midiEditor__autoIncContainer">
+                            <select data-bind="options: $parent.autoIncOptions, value: $parent.autoIncData2f, optionsText: $parent.formatAutoIncOption"></select></span>
+                        </div>
+                        <div data-bind="ifnot: hasFixData2t, visible: !hasFixData2t, css: {'midiEditor__group--excluded': !$parent.includeData2t()}" class="midiEditor__group">
+                          <label class="midiEditor__label">
+                            <input type="checkbox" data-bind="checked: $parent.includeData2t" class="midiEditor__include">Data2t:
+                          </label><span class="midiEditor__groupValue">
+                            <input type="text" maxlength="5" title="MIDI data2 (min)" data-bind="countByArrowUpDown: true, textInput: $parent.data2t" class="midiEditor__text"></span><span class="midiEditor__autoIncContainer">
+                            <select data-bind="options: $parent.autoIncOptions, value: $parent.autoIncData2t, optionsText: $parent.formatAutoIncOption"></select></span>
+                        </div>
+                        <div data-bind="if: hasSysex, visible: hasSysex" class="midiEditor__group">
+                          <input type="text" data-bind="textInput: $parent.sysex" class="midiEditor__text midiEditor__text--sysex">
+                        </div>
+                      </div>
+                      <div data-bind="if: mode() &amp;&amp; messageType()" class="midiEditor__buttons">
+                        <div data-bind="visible: mode().isMultiEdit &amp;&amp; !includeAll()" class="midiEditor__updateOnlyExisting">
+                          Existing <span data-bind="text: messageType().name"></span><br/>properties are updated only!
+                          
+                        </div>
+                        <button type="submit" data-bind="enable: canSubmit, css: {'midiEditor__ok--disabled': !canSubmit()}" class="midiEditor__ok">Save</button>
+                        <button type="button" data-bind="click: reset" class="midiEditor__cancel">Cancel</button>
+                        <!-- ko if: canRemoveMidi-->
+                        <button type="button" data-bind="css: {'midiEditor__remove--confirmed': isRemoveConfirmed}, click: isRemoveConfirmed.toggle,attr: {title: ((mode().isSingleEdit) ? 'Clear this MIDI variable...' : 'Clear all MIDI vars in this column...')}" class="midiEditor__remove">X</button><a href="#" data-bind="click: removeMidi, visible: isRemoveConfirmed" class="midiEditor__removeConfirmText">Confirm to clear</a>
+                        <!-- /ko-->
+                      </div>
+                      <!-- ko if: mode().isMultiEdit-->
+                      <div class="midiEditor__preview">
+                        <div class="midiEditor__previewGroup">
+                              <div class="roundCheckboxWrap">
+                                <input id="cbMidiEditPreview" type="checkbox" data-bind="checked: isPreviewEnabled" class="roundCheckbox">
+                                <label for="cbMidiEditPreview"></label>
+                              </div>
+                              <label for="cbMidiEditPreview">Preview</label><br>
+                          <div data-bind="visible: isPreviewEnabled() &amp;&amp; isMessageTypeNote()" class="midiEditor__previewOpts">
+                                <div class="roundCheckboxWrap">
+                                  <input id="cbMidiEditNoteNames" type="checkbox" data-bind="checked: isNoteNamesEnabled" class="roundCheckbox">
+                                  <label for="cbMidiEditNoteNames"></label>
+                                </div>
+                                <label for="cbMidiEditNoteNames">Note Names in Preview</label>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /ko-->
+                    </form>
+                  </div>
+                </script>
+              </div>
+              <div data-bind="click: isOpen.toggleOff" class="panel__close">Close</div>
+            </div>
+          </div><!-- /ko --><!-- ko with: $root.controlFilter -->
+          <div style="display: none" data-bind="visible: isVisible" data-module-name="AMD/util/Draggable" data-handle-selector=".panel__headline" class="controlFilter panel js-module">
+            <div data-bind="dblClick: isOpen.toggle" class="panel__headline">Filter<span class="fa-move"></span></div>
+            <div data-bind="click: isOpen.toggle, css: {'fa-down-open': isOpen, 'fa-right-open': !isOpen()}" class="panel__toggle"></div>
+            <div data-bind="if: isOpen">
+              <div class="panel__content">
+                <table class="controlFilter__items">
+                  <tbody data-bind="fastForEach: options">
+                    <tr data-bind="css: {'controlFilter__item--zero': !count(), 'controlFilter__item--disabled': !isVisible()}" class="controlFilter__item">
+                      <td>
+                        <div class="roundCheckboxWrap">
+                          <input type="checkbox" data-bind="attr: {id: 'filterCb__' + controlType}, checked: isVisible" class="roundCheckbox">
+                          <label data-bind="attr: {for: 'filterCb__' + controlType}"></label>
+                        </div>
+                        <label data-bind="attr: {for: 'filterCb__' + controlType}, text: controlType"></label>
+                      </td>
+                      <td><span title="Solo" data-bind="text: count, click: $parent.soloType" class="controlFilter__itemCount"></span></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="controlFilter__actions">
+                  <button data-bind="click: reset">Reset</button>
+                  <button data-bind="click: showAllButLabels" title="All but labels">All but labels</button>
+                  <button data-bind="click: hideAll">All OFF</button>
+                </div>
+                <div title="Use [Shift]+Click to solo/unsolo a single color" class="controlFilter__colors">
+                  <ul>
+                    <!-- ko fastForEach: $root.controlFilter.ALL_COLORS-->
+                    <li data-bind="css: {'controlFilter__color--allowed': $root.controlFilter.allowedColors[$data]()}, style: {background: $data}, click: $root.controlFilter.colorClick" class="controlFilter__color"></li>
+                    <!-- /ko-->
+                  </ul>
+                </div>
+                <div class="controlFilter__moreOpts">
+                  <div data-bind="visible: $root.isDevModeEnabled" class="controlFilter__nonZero">
+                        <div class="roundCheckboxWrap">
+                          <input id="cbUnusedTypes" type="checkbox" data-bind="checked: isCountFilterEnabled" class="roundCheckbox">
+                          <label for="cbUnusedTypes"></label>
+                        </div>
+                        <label for="cbUnusedTypes">Hide unused types</label>
+                  </div><span title="Ignore labels when making selections in the layout">
+                        <div class="roundCheckboxWrap">
+                          <input id="cbNoLabelSelect" type="checkbox" data-bind="checked: $root.controlSelection.ignoreLabels" class="roundCheckbox">
+                          <label for="cbNoLabelSelect"></label>
+                        </div>
+                        <label for="cbNoLabelSelect">Don't select labels</label></span>
+                </div>
+              </div>
+              <div data-bind="click: isOpen.toggleOff" class="panel__close">Close</div>
+            </div>
+          </div><!-- /ko -->
+    </article>
+    <footer class="footer">
+      <div class="footer__group"><a target="_blank" href="https://github.com/justlep/quickedit4touchosc.git"><strong>QuickEdit</strong> source on Github</a> &middot;</div>
+      <div class="footer__group">&copy; 2017 Lennart Pegel &middot;</div>
+      <div class="footer__group"><b>TouchOSC</b> is a registered trademark of <a href="http://hexler.net/software/touchosc" target="_blank">Hexler.net</a></div>
+      <div title="Enable additional tabs for debugging" data-bind="visible: layoutHolder.hasLayout" class="footer__group footer__group--devSwitch">
+            <div class="roundCheckboxWrap">
+              <input id="cbSwitchDevMode" type="checkbox" data-bind="checked: $root.isDevModeEnabled" class="roundCheckbox">
+              <label for="cbSwitchDevMode"></label>
+            </div>
+            <label for="cbSwitchDevMode">debug</label>
+      </div>
+    </footer>
+    <script src="resources/js/lib/zipjs/WebContent/zip.js"></script>
+    <script>
+      zip.workerScriptsPath = "resources/js/lib/zipjs/WebContent/";
+      
+    </script>
+    <script src="resources/js/lib/jquery-3.1.0.min.js"></script>
+    <script src="resources/js/lib/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="resources/js/lib/touchpunch/jquery.ui.touch-punch.min.js"></script>
+    <script src="resources/js/lib/knockout/dist/knockout.js"></script>
+    <script src="resources/js/requirejsAndConfig.js"></script>
+    <script src="resources/js/bundle.js"></script>
+  </body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HTML Dummy</title><!-- Project version: 0.0.9 -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="Lennart Pegel">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="../resources/images/favicon.png" size="32x32" type="image/png">
+    <link rel="stylesheet" href="../resources/css/style.min.css">
+  </head>
+  <body>
+    <header class="header">
+    </header>
+    <article>
+      <style type="text/css">
+        body {background: #fff !important; padding: 20px;}
+        .footer {
+            display:none;
+        }
+        .factoryHelper {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+        }
+        input.invalid {
+            border: 2px solid red;
+            color: red;
+        }
+        button {margin-bottom:10px}
+        td, th {border: 1px solid #ccc; padding: 10px;}
+        
+      </style>
+      <button data-bind="click: $root.toggleVisible">Toggle</button>
+      <div data-bind="if: isVisible">
+        <table>
+          <thead>
+            <tr>
+              <th>key</th>
+              <th>val</th>
+              <th>validIntOrNull</th>
+            </tr>
+          </thead>
+          <tbody data-bind="foreach: {data: ['valsimple','val0127','valmax127','valminminus100'], as: 'key'}">
+            <tr>
+              <td data-bind="text: key"></td>
+              <td>
+                <input type="text" data-bind="textInput: $root[key], countByArrowUpDown: true, css: {invalid: (null === $root[key].validIntOrNull()}">
+              </td>
+              <td data-bind="text: $root[key].validIntOrNull"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <script id="trTpl" type="text/html"></script>
+    </article>
+    <footer class="footer">&copy; 2017 - present Lennart Pegel</footer>
+    <script src="../resources/js/lib/jquery-3.1.0.min.js"></script>
+    <script src="../resources/js/lib/knockout/dist/knockout.js"></script>
+    <script type="text/javascript">
+      ko.extenders.validIntOrNull = (function() {
+          var NUMBER_REGEX = /^-?[0-9]+?$/,
+              checkMinMax = function(v, min, max) {
+                  return v >= min && v <= max;
+              },
+              checkMin = function (v, min, __max) {
+                  return v >= min;
+              },
+              checkMax = function (v, __min, max) {
+                  console.warn('check max: %o, %o', v, max);
+                  return v <= max;
+              };
+      
+          return function(target, opts) {
+              var hasMin = opts && typeof opts.min === 'number',
+                  hasMax = opts && typeof opts.max === 'number',
+                  checkerFn = (hasMin && hasMax) ? checkMinMax : hasMin ? checkMin : hasMax ? checkMax : null;
+      
+              target.validIntOrNull = ko.computed(function() {
+                  var v = target(),
+                      num = NUMBER_REGEX.test(''+v) && parseInt(v, 10),
+                      isValid = (typeof num === 'number') && (!checkerFn || checkerFn(num, opts.min, opts.max));
+      
+                  return isValid ? num : isValid;
+              });
+      
+              return target;
+          };
+      })();
+      
+      var vm = {
+          valsimple: ko.observable(0).extend({validIntOrNull: null}),
+          val0127: ko.observable(0).extend({validIntOrNull: {min: 0, max: 127}}),
+          valmax127: ko.observable(0).extend({validIntOrNull: {max: 127}}),
+          valminminus100: ko.observable(0).extend({validIntOrNull: {min: -100}}),
+          isVisible: ko.observable(true),
+          toggleVisible: function() {
+              this.isVisible(!this.isVisible());
+          }
+      };
+      
+      ko.bindingHandlers.countByArrowUpDown = {
+          init: function (element, valueAccessor) {
+              var NUMBER_REGEX = /^-?[0-9]+?$/,
+                  UP = 38,
+                  DOWN = 40,
+                  keyDownHandler = function (e) {
+                      var keyCode = e.keyCode,
+                          val = e.target.value,
+                          numVal = NUMBER_REGEX.test(''+val) ? parseInt(val) : null,
+                          isKeyUp = keyCode === UP,
+                          isKeyDown = keyCode === DOWN;
+      
+                      if ((isKeyUp || isKeyDown) && !isNaN(numVal)) {
+                          numVal += isKeyUp ? 1 : isKeyDown ? -1 : 0;
+                          e.preventDefault();
+                          $(e.target).val(numVal).trigger('change');
+                      }
+                  };
+      
+      
+              $(element).on("keydown", keyDownHandler);
+              ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+                  $(element).off('keydown', keyDownHandler);
+              });
+          }
+      };
+      
+      ko.applyBindings(vm);
+    </script>
+  </body>
+</html>
