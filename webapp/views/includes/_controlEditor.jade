@@ -1,0 +1,89 @@
+
+script#controlEditorTabsTpl(type="text/html")
+    .controlEditor__tabs
+        a.controlEditor__tab(data-bind="event: {mousedown: isTabPageMode.toggleOff}, css: {'controlEditor__tab--active': !isTabPageMode()}") Edit Controls
+            span.controlEditor__count.inBrackets(data-bind="text: selection.controls().length")
+        a.controlEditor__tab(data-bind="event: {mousedown: isTabPageMode.toggleOn}, css: {'controlEditor__tab--active': isTabPageMode}") Edit Tabs
+            span.controlEditor__count.inBrackets(data-bind="text: selection.controls().length")
+
+
++panel('$root.controlEditor', 'controlEditor', '<!-- ko template: {name: "controlEditorTabsTpl"} --><!-- /ko -->')
+
+    //- Knockout-context: ControlEditor
+
+    .controlEditor__empty(data-bind="visible: isEmpty") Nothing selected
+
+    // ko if: !isEmpty() && tableNeedsRedraw()
+    table.controlEditor__table(data-bind="if: $root.layoutHolder.needsRedraw, css: {'controlEditor__table--pageTabMode': isTabPageMode}")
+        thead: tr
+            th.controlEditor__unselectTh &nbsp; <!-- (data-bind="click: selection.reset") &nbsp; -->
+            // ko if: isHighlighterEnabled
+            th.controlEditor__tableHeaderCell.controlEditor__highlighterCell(data-bind="highlightControl: 'ALL'", width="1") &nbsp;
+            // /ko
+            // ko foreach: controlProperties
+            th.controlEditor__tableHeaderCell
+                div(data-bind="text: $data.replace(/_/,' '), click: $parent.propertyEditor.editMultipleControls")
+                <!-- ko template: {name: 'propertyEditorTpl', data: $parent.propertyEditor, if: $parent.propertyEditor.isEditedMultiProperty($data)} --><!-- /ko -->
+            // /ko
+            // ko if: isMidiVisible
+            th.controlEditor__tableHeaderCell(data-bind="with: midiEditor")
+                div(data-bind="click: editMultiValue") Value
+                <!-- ko template: {name: 'midiEditorTpl', if: mode().isMultiEditValue} --><!-- /ko -->
+            th.controlEditor__tableHeaderCell(data-bind="with: midiEditor")
+                div(data-bind="click: editMultiTouch") Touch
+                <!-- ko template: {name: 'midiEditorTpl', if: mode().isMultiEditTouch} --><!-- /ko -->
+            th.controlEditor__tableHeaderCell(data-bind="with: midiEditor")
+                div(data-bind="click: editMultiColor") Color
+                <!-- ko template: {name: 'midiEditorTpl', if: mode().isMultiEditColor} --><!-- /ko -->
+            // /ko
+        tbody.controlEditor__tableBody(data-bind="click: onBodyCellClick, fastForEach: selection.controls"): tr
+            td.controlEditor__unselectCell(title="deselect this control")
+            // ko if: $parent.isHighlighterEnabled
+            td.controlEditor__highlighterCell(data-bind="highlightControl: true")
+            // /ko
+            // ko foreach: $parent.controlProperties
+            td(data-bind="css: {'controlEditor__tableColorCell': $data==='_color', 'controlEditor__tableMultiEditedCell': $parents[1].propertyEditor.isEditedMultiProperty($data)}")
+                <!-- ko if: ($data === '_color') --><span class="controlEditor__tableColorCellColor" data-bind="style: {background: $parent.colorCode}"></span><!-- /ko -->
+                // ko ifnot: $parents[1].propertyEditor.isEditedControlAndProperty($parent, $data)
+                <!-- ko text: $parent.props[$data] --><!-- /ko -->
+                // /ko
+                // ko if: $parents[1].propertyEditor.isEditedControlAndProperty($parent, $data)
+                <!-- ko template: {name: 'propertyEditorTpl', data: $parents[1].propertyEditor, if: $parents[1].propertyEditor.isVisible} --><!-- /ko -->
+                // /ko
+                // ko with: $parents[1].propertyEditor.isPreviewEnabled() && $parents[1].propertyEditor.isEditedMultiProperty($data) && $parents[1].propertyEditor.canSubmit() && $parents[1].propertyEditor.submittableValueMap()[$parent.uid]
+                .controlEditor__multiEditPreview(data-bind="text: $data")
+                // /ko
+            // /ko
+            // ko if: $parent.isMidiVisible
+            td(data-bind="foreach: valueVars")
+                .controlEditor__midiVal
+                    b.controlEditor__midiValVar(data-bind="text: $data, visible: $parent.valueVars.length>1")
+                    span.controlEditor__midiValValue(data-bind="text: $parents[1].midiEditor.midiOrPreviewString($parent, $data)")
+                <!-- ko template: {name: 'midiEditorTpl', data: $parents[1].midiEditor, if: $parents[1].midiEditor.isEditedControlVar($data, $parent)} --><!-- /ko -->
+            td(data-bind="foreach: touchVars"): div
+                .controlEditor__midiVal
+                    b.controlEditor__midiValVar(data-bind="text: $data, visible: $parent.touchVars.length>1")
+                    span.controlEditor__midiValValue(data-bind="text: $parents[1].midiEditor.midiOrPreviewString($parent, $data)")
+                <!-- ko template: {name: 'midiEditorTpl', data: $parents[1].midiEditor, if: $parents[1].midiEditor.isEditedControlVar($data, $parent)} --><!-- /ko -->
+            td(data-bind="foreach: colorVars"): div
+                .controlEditor__midiVal
+                    b.controlEditor__midiValVar(data-bind="text: $data, visible: $parent.colorVars.length>1")
+                    span.controlEditor__midiValValue(data-bind="text: $parents[1].midiEditor.midiOrPreviewString($parent, $data)")
+                <!-- ko template: {name: 'midiEditorTpl', data: $parents[1].midiEditor, if: $parents[1].midiEditor.isEditedControlVar($data, $parent)} --><!-- /ko -->
+            // /ko
+    // /ko
+
+    .controlEditor__config(data-bind="visible: !isEmpty()")
+        span.controlEditor__configItem(data-bind="ifnot: $root.controlEditor.isTabPageMode", title="Flashes selected controls to help identifying them within the selection")
+            +knockoutCheckbox('cbEditShowHighlighter', "Marker", 'checked: $root.controlEditor.isHighlighterEnabled')
+        span.controlEditor__configItem(title="Show OSC properties (scalef, scalet, osc_cs)")
+            +knockoutCheckbox('cbEditShowOsc', "OSC", 'checked: $root.controlEditor.isOscVisible')
+        span.controlEditor__configItem(data-bind="ifnot: $root.controlEditor.isTabPageMode", title="Show sort of 'non-basic' properties")
+            +knockoutCheckbox('cbEditShowNonBasic', "Other", 'checked: $root.controlEditor.isNonBasicVisible')
+        span.controlEditor__configItem(title="Show MIDI properties (Value, Touch, Color)")
+            +knockoutCheckbox('cbEditShowMidi', "MIDI", 'checked: $root.controlEditor.isMidiVisible')
+        span.controlEditor__configItem(data-bind="visible: $root.controlEditor.isMidiVisible", title="Show note names of MIDI note values") &nbsp;
+            +knockoutCheckbox('cbEditShowNoteNames', "Note Names", 'checked: $root.controlEditor.midiEditor.isNoteNamesEnabled')
+
+    include _propertyEditor
+    include _midiEditor

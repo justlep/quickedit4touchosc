@@ -1,0 +1,36 @@
+
+script#propertyEditorTpl(type="text/html")
+    //- knockout context: PropertyEditor
+    .propertyEditor(data-bind="css: {'propertyEditor--multiEdit': isMultiEditMode}")
+        b.propertyEditor__mutltiHeadline Multi-Edit
+        form(data-bind="submit: submit, enable: canSubmit", action="")
+            // ko ifnot: propInfo().isColor
+            input.propertyEditor__text(type="text", name="newval", autocomplete="off", autocorrect="off", autocapitalize="off", spellcheck="false",
+                                       data-bind="textInput: newValue, focusAfterRender: {select: propInfo().isNumber}, " +
+                                                 "event: {keyup: onKeyup}, disable: useCounterAsValue, attr: {title: useCounterAsValue() ? 'All values are calculated by the counter' : ''}")
+
+            .propertyEditor__counter(data-bind="visible: isMultiEditMode, if: isMultiEditMode")
+                .propertyEditor__counterToggle(title="Enables the '%C' placeholder for generating auto-numbered names")
+                    +knockoutCheckbox('cbPropEditUseCounter', "Counter %C", 'checked: useCounter')
+                // ko if: useCounter
+                table
+                    tr
+                        th Start
+                        th Step
+                        th(data-bind="visible: propInfo().isString") Digits
+                    tr
+                        td: input.propertyEditor__counterStart(type="text", data-bind="countByArrowUpDown: true, textInput: counterStart, focusAfterRender: {select:true}")
+                        td: select.propertyEditor__counterStep(data-bind="value: counterStep, options: counterStepOptions")
+                        td(data-bind="visible: propInfo().isString")
+                            select.propertyEditor__counterDigits(data-bind="value: counterDigits, options: counterDigitsOptions")
+                // /ko
+            button.propertyEditor__ok(type="submit", data-bind="enable: canSubmit, css: {'propertyEditor__ok--disabled': !canSubmit()}") Save
+            // /ko
+            // ko if: propInfo().isColor
+            ul.propertyEditor__colors(data-bind="foreach: colorOptions"): li(data-bind="click: $parent.setColor, style: {background: $data}")
+            // /ko
+            button.propertyEditor__cancel(type="button", data-bind="click: reset") Cancel
+            // ko if: isMultiEditMode() && !propInfo().isColor
+            .propertyEditor__preview
+                +knockoutCheckbox('cbPropEditPreview', "Preview", 'checked: isPreviewEnabled')
+            // /ko

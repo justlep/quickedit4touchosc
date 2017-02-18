@@ -1,0 +1,8 @@
+.idea
+node_modules/*
+webapp/public/css/*.min.css
+webapp/public/css/*.min.css.map
+webapp/public/css/spritesheet-generated*
+webapp/public/js/requirejsAndConfig.js
+webapp/public/js/bundle.js
+webapp/public/images/sprites/spritesheet-generated*

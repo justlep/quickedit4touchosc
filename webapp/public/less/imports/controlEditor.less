@@ -1,0 +1,191 @@
+@import (reference) "variables";
+@import (reference) "mixins";
+
+.controlEditor {
+    overflow: visible;
+
+    .panel__content {
+        padding-bottom: 10px;
+    }
+
+    &__count {
+        font-weight: normal;
+        margin-left: 5px;
+        display: none;
+    }
+
+    &__empty {
+        font-style: italic;
+        text-align: center;
+    }
+
+    &__table {
+        width: 100%;
+
+        &HeaderCell {
+            text-align: left;
+            padding-bottom: 4px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        &MultiEditedCell {
+            color: darken(@bodyColor, 20%);
+            white-space: nowrap;
+
+            .controlEditor__multiEditPreview {
+                display: inline;
+                font-style: normal;
+                color: darken(@bodyColor, 30%);
+                font-weight: bold;
+                padding-right: 5px;
+
+                &:before {
+                    content: ' » ';
+                    font-weight: normal;
+                    color: red; // lighten(@bodyColor, 30%);
+                    opacity: 0.5;
+                }
+            }
+        }
+
+        th, td {
+            padding: 2px 3px;
+            .fontSmall(1.15);
+            cursor: pointer;
+            border: 1px solid darken(@bodyColor, 5%);
+        }
+
+        &Body {
+            > tr:nth-child(odd) td {
+                background-color: lighten(@bodyColor, 13%);
+            }
+
+            > tr:hover > td {
+                background-color: lighten(@bodyColor, 30%);
+            }
+        }
+
+        &ColorCell {
+            padding-left: 10px !important;
+            position: relative;
+            background-clip: padding-box;
+
+            &Color {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 5px;
+            }
+        }
+
+        &--pageTabMode {
+            .controlEditor__unselectTh,
+            .controlEditor__unselectCell {
+                display: none;
+            }
+        }
+    }
+
+    &__config {
+        padding-top: 10px;
+
+        &Item {
+            margin-left: 3px;
+            &:first-child {
+                margin-left: 0;
+            }
+        }
+    }
+
+    &__highlighterCell {
+        opacity: 0.3;
+        text-align: center;
+
+        th& {
+            font-weight: normal;
+        }
+
+        &:after {
+            content: 'mark';
+        }
+
+        &--active {
+            opacity: 1;
+            color: orange;
+        }
+    }
+
+    th&__unselectTh {
+        border-left: none;
+        border-top: none;
+    }
+
+    &__unselectCell {
+        opacity: 0.3;
+        text-align: center;
+
+        &:hover{
+            opacity: 1;
+        }
+
+        &:after {
+            content: 'X'
+        }
+    }
+
+    &__midi {
+        &Val {
+            white-space: nowrap;
+
+            &:hover {
+                background: lighten(@bodyColor, 45%);
+                border-radius: 2px;
+            }
+
+            &Var {
+                margin-right: 5px;
+                font-weight: bold;
+
+                &:after {
+                    content: ': '
+                }
+            }
+
+            &Value {
+                .fontTiny(1);
+            }
+        }
+    }
+
+    &__tabs {
+        display: inline;
+    }
+
+    &__tab {
+        display: inline-block;
+        background: lighten(@bodyColor, 20%);
+        cursor: pointer;
+        border-radius: 3px;
+        border: 1px solid #666;
+        margin-right: 5px;
+        white-space: nowrap;
+        .fontSmall(2);
+        padding-left: 10px;
+        padding-right: 10px;
+
+        &:hover {
+            background-color: lighten(@bodyColor, 30%);
+            color: #222;
+        }
+
+        &--active {
+            background-color: lighten(@bodyColor, 40%) !important;
+
+            .controlEditor__count {
+                display: inline;
+            }
+        }
+    }
+}

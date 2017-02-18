@@ -1,0 +1,55 @@
+
+@bodyColor: #838B63;
+@link-color: #1A1D11;
+
+@warningColor: #ce1b1b;
+
+@defaultButtonColor: #000;
+@defaultButtonBgColor: #f1f1f1;
+@defaultButtonHoverBgColor: #E0E0E0;
+
+@fontSizeBig: 1.2rem;
+@fontSizeNormal: 0.9rem;
+@fontSizeNormalPlus: 1rem;
+@fontSizeDropdown: 0.9rem;
+@fontSizeSmall: 0.8rem;
+@fontSizeTiny: 0.72rem;
+@fontSizeMicro: 0.68rem;
+
+.disabledButton() {
+    border-color: @warningColor;
+    color: @warningColor;
+}
+
+.headlineShadow() {
+    text-shadow: 1px 1px lighten(@bodyColor, 20%);
+}
+
+.fontBig(@lineHeightFactor) {
+    font-size: @fontSizeBig;
+    line-height: (@lineHeightFactor * @fontSizeBig);
+}
+.fontNormal(@lineHeightFactor) {
+    font-size: @fontSizeNormal;
+    line-height: (@lineHeightFactor * @fontSizeNormal);
+}
+.fontNormalPlus(@lineHeightFactor) {
+    font-size: @fontSizeNormalPlus;
+    line-height: (@lineHeightFactor * @fontSizeNormalPlus);
+}
+.fontSmall(@lineHeightFactor) {
+    font-size: @fontSizeSmall;
+    line-height: (@lineHeightFactor * @fontSizeSmall);
+}
+.fontTiny(@lineHeightFactor) {
+    font-size: @fontSizeTiny;
+    line-height: (@lineHeightFactor * @fontSizeTiny);
+}
+.fontMicro(@lineHeightFactor) {
+    font-size: @fontSizeMicro;
+    line-height: (@lineHeightFactor * @fontSizeMicro);
+}
+.editorTextFieldStyle() {
+    padding: 0 3px;
+    .fontSmall(1.5);
+}

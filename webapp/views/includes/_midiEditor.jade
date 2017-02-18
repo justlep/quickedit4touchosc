@@ -1,0 +1,82 @@
+
+script#midiEditorTpl(type="text/html")
+    //- knockout context: MidiEditor
+    .midiEditor(data-bind="css: {'midiEditor--singleEdit': mode().isSingleEdit, 'midiEditor--multiEdit': mode().isMultiEdit}")
+        form(data-bind="submit: submit, enable: canSubmit", action="")
+
+            if false
+                ul.midiEditor__messageTypes(data-bind="foreach: messageTypeOptions")
+                    li.midiEditor__messageType(data-bind="css: {'midiEditor__messageType--active': $parent.messageType() === $data}, " +
+                                                        "text: shortName, click: $parent.messageType, attr: {title: name}")
+
+
+            select.midiEditor__msgTypeSelect(data-bind="options: messageTypeOptions, optionsText: 'name', value: messageType")
+
+            div(data-bind="with: messageType")
+                //- knockout context: MessageType
+
+                .midiEditor__group(data-bind="ifnot: hasFixChannel, visible: !hasFixChannel, css: {'midiEditor__group--excluded': !$parent.includeChannel()}")
+                    label.midiEditor__label
+                        input.midiEditor__include(type="checkbox", data-bind="checked: $parent.includeChannel")
+                        | Channel:
+                    span.midiEditor__groupValue
+                        select.midiEditor__channel(data-bind="options: channelOptions, value: $parent.channel, optionsText: function(ch) {return 'Ch ' + ch}")
+
+                    span.midiEditor__autoIncContainer
+                        select(data-bind="options: $parent.autoIncChannelOptions, value: $parent.autoIncChannel, optionsText: $parent.formatAutoIncOption")
+
+                .midiEditor__group(data-bind="ifnot: hasFixData1, visible: !hasFixData1, css: {'midiEditor__group--excluded': !$parent.includeData1()}")
+                    label.midiEditor__label
+                        input.midiEditor__include(type="checkbox", data-bind="checked: $parent.includeData1")
+                        | Data1:
+                        // ko if: data1IsNote || data1IsCC
+                        span.midiEditor__noteName(data-bind="text: data1IsCC ? 'CC number' : $root.midiUtil.getNoteName($parent.data1()) || 'invalid'")
+                        // /ko
+                    span.midiEditor__groupValue
+                        input.midiEditor__text(type="text", maxlength=5, title="MIDI data1" data-bind="countByArrowUpDown: true, textInput: $parent.data1")
+                    span.midiEditor__autoIncContainer
+                        select(data-bind="options: $parent.autoIncOptions, value: $parent.autoIncData1, " +
+                                                               "optionsText: $parent.formatAutoIncOption, valueAllowUnset: true")
+
+                .midiEditor__group(data-bind="ifnot: hasFixData2f, visible: !hasFixData2f, css: {'midiEditor__group--excluded': !$parent.includeData2f()}")
+                    label.midiEditor__label
+                        input.midiEditor__include(type="checkbox", data-bind="checked: $parent.includeData2f")
+                        | Data2f:
+                    span.midiEditor__groupValue
+                        input.midiEditor__text(type="text", maxlength=5, title="MIDI data2 (min)", data-bind="countByArrowUpDown: true, textInput: $parent.data2f")
+                    span.midiEditor__autoIncContainer
+                        select(data-bind="options: $parent.autoIncOptions, value: $parent.autoIncData2f, optionsText: $parent.formatAutoIncOption")
+
+                .midiEditor__group(data-bind="ifnot: hasFixData2t, visible: !hasFixData2t, css: {'midiEditor__group--excluded': !$parent.includeData2t()}")
+                    label.midiEditor__label
+                        input.midiEditor__include(type="checkbox", data-bind="checked: $parent.includeData2t")
+                        | Data2t:
+                    span.midiEditor__groupValue
+                        input.midiEditor__text(type="text", maxlength=5, title="MIDI data2 (min)", data-bind="countByArrowUpDown: true, textInput: $parent.data2t")
+                    span.midiEditor__autoIncContainer
+                        select(data-bind="options: $parent.autoIncOptions, value: $parent.autoIncData2t, optionsText: $parent.formatAutoIncOption")
+
+                .midiEditor__group(data-bind="if: hasSysex, visible: hasSysex")
+                    input.midiEditor__text.midiEditor__text--sysex(type="text", data-bind="textInput: $parent.sysex")
+
+            .midiEditor__buttons(data-bind="if: mode() && messageType()")
+                .midiEditor__updateOnlyExisting(data-bind="visible: mode().isMultiEdit && !includeAll()").
+                    Existing <span data-bind="text: messageType().name"></span><br/>properties are updated only!
+
+                button.midiEditor__ok(type="submit", data-bind="enable: canSubmit, css: {'midiEditor__ok--disabled': !canSubmit()}") Save
+                button.midiEditor__cancel(type="button", data-bind="click: reset") Cancel
+                // ko if: canRemoveMidi
+                button.midiEditor__remove(type="button", data-bind="css: {'midiEditor__remove--confirmed': isRemoveConfirmed}, " +
+                                                                   "click: isRemoveConfirmed.toggle," +
+                                                                   "attr: {title: ((mode().isSingleEdit) ? 'Clear this MIDI variable...' : 'Clear all MIDI vars in this column...')}") X
+                a.midiEditor__removeConfirmText(href="#", data-bind="click: removeMidi, visible: isRemoveConfirmed") Confirm to clear
+                // /ko
+
+            // ko if: mode().isMultiEdit
+            .midiEditor__preview
+                .midiEditor__previewGroup
+                    +knockoutCheckbox('cbMidiEditPreview', "Preview", 'checked: isPreviewEnabled')
+                    br
+                    .midiEditor__previewOpts(data-bind="visible: isPreviewEnabled() && isMessageTypeNote()")
+                        +knockoutCheckbox('cbMidiEditNoteNames', "Note Names in Preview", 'checked: isNoteNamesEnabled')
+            // /ko

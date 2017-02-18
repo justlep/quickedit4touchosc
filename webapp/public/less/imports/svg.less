@@ -1,0 +1,123 @@
+.svg {
+    &__root {
+        border: 1px solid red;
+        background: #000;
+        transform-origin: right top;
+
+        &, * {
+            user-select: none;
+            cursor: crosshair;
+        }
+
+        ::selection, *::selection {
+            background: none;
+        }
+
+        &--tabsEditMode {
+            .svg__tab {
+                stroke: #fff;
+                stroke-width: 2px;
+                stroke-dasharray: 3 2;
+            }
+
+            .svg__controlsArea {
+                opacity: 0.5;
+            }
+
+            .svg__editModeNotice {
+                display: block;
+            }
+
+            * {
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    &__controlWrap {
+        overflow: visible;
+    }
+
+    &__selectable {
+        fill: none; // #030303;
+
+        &--selected {
+            stroke: #fff;
+            stroke-width: 2px;
+            stroke-dasharray: 3 3;
+        }
+
+        &--highlight {
+            stroke-width: 4px;
+            stroke-dasharray: none;
+        }
+    }
+
+    &__control {
+
+    }
+
+    &__label {
+        &--markedEmpty {
+            stroke: #444 !important;
+            stroke-dasharray: 4;
+        }
+    }
+
+    &__labelText {
+        transform-origin: 50% 50%;
+
+        &--rotated {
+            transform: rotate(90deg);
+        }
+    }
+
+    &__tabsAreaGroup {
+        transform-origin: top left;
+    }
+
+    &__tab {
+        fill: #1c1c1c;
+        rx: 5;
+        ry: 5;
+        stroke-width: 2px;
+        stroke: #000;
+        cursor: pointer;
+
+        &--selected {
+            fill: #333;
+        }
+    }
+
+    &__editModeNotice {
+        display: none;
+        stroke: #fff;
+        fill: #333;
+        opacity: 0.5;
+        font-size: 150px;
+        font-weight: bold;
+    }
+
+    &__led {
+        //stroke: #999;
+        //stroke-width: 2;
+
+        // clearer LED colors
+        //@saturationFactor: 50%;
+        //@lightFactor: 30%;
+        //&--red {fill: lighten(saturate(#231C1C, @saturationFactor), @lightFactor)}
+        //&--green {fill: lighten(saturate(#1C231C, @saturationFactor), @lightFactor)}
+        //&--blue {fill: lighten(saturate(#15151C, @saturationFactor), @lightFactor)}
+        //&--yellow {fill: lighten(saturate(#1C1C10, @saturationFactor), @lightFactor)}
+        //&--purple {fill: lighten(saturate(#1C0E1C, @saturationFactor), @lightFactor/2)}
+        //&--gray {fill: lighten(#1C1C1C, 20%)}
+        //&--orange {fill: lighten(saturate(#282015, @saturationFactor*2), @lightFactor)}
+        //&--brown {fill: lighten(saturate(#282215, @saturationFactor), 0)}
+        //&--pink {fill: lighten(saturate(#280028, @saturationFactor), @lightFactor*2)}
+    }
+
+    &__encoder {
+        // stroke-dasharray: 5,1;
+        stroke-dasharray: 3,1;
+    }
+}

@@ -1,0 +1,48 @@
+.tabs {
+    @borderColor: #b2bc89;
+
+    &__list:extend(.noselect) {
+        border-bottom: 3px solid @borderColor;
+        padding: 20px 10px 0;
+
+        li {
+            display: none;
+            border-radius: 5px 5px 0 0;
+            background: @borderColor;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        li:hover,
+        li&--active {
+            background-color: lighten(@borderColor, 20%);
+        }
+        li&--active {
+            font-weight: bold;
+        }
+    }
+
+
+    &__list &__tab--dev {
+        display: none;
+        &First {
+            margin-left: 30px;
+        }
+    }
+
+    &__list--dev&__list--enabled &__tab--dev,
+    &__list--enabled li,
+    li&__tab--info {
+        display: inline-block;
+    }
+
+    &__content {
+        padding: 5px 10px 20px;
+    }
+
+    &__submenu {
+        padding: 2px 0;
+        border-bottom: 1px solid @borderColor;
+    }
+}
+

@@ -1,0 +1,8 @@
+
+//- Knockout context: VisualMode < root (QuickEditApp)
+
+.controlTooltip.noselect#controlTooltip(data-bind="visible: controlTooltip, with: controlTooltip")
+    div
+        span.controlTooltip__type(data-bind="text: typeName")
+        span.controlTooltip__name.quoted(data-bind="text: props._name || ''")
+    pre.controlTooltip__json(data-bind="text: JSON.stringify(props, null, 2)")

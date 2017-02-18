@@ -1,0 +1,25 @@
+@import (reference) "variables";
+
+.header {
+
+    &__headline {
+        .headlineShadow();
+        font-size: @fontSizeBig;
+        padding: 10px;
+        font-weight: bold;
+        color: darken(@bodyColor, 35%);
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 5;
+        text-align: right;
+    }
+
+    &__build {
+        display: block;
+        font-size: @fontSizeTiny;
+        font-weight: normal;
+        padding-top: 4px;
+    }
+
+}

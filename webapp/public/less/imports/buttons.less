@@ -1,0 +1,20 @@
+@import (reference) "variables";
+@import (reference) "mixins";
+
+button {
+    cursor: pointer;
+    border-radius: 3px;
+    border: 1px solid darken(@bodyColor, 20%);
+    background-color: @defaultButtonBgColor;
+    color: @defaultButtonColor;
+    .fontNormal(1.5);
+
+    &:hover {
+        background: @defaultButtonHoverBgColor;
+    }
+}
+
+button[disabled] {
+    opacity: 0.5;
+    cursor: default;
+}

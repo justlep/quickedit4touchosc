@@ -1,0 +1,54 @@
+
+.info
+
+    .info__block
+        h2.info__headline What is QuickEdit?
+        p QuickEdit is an online, non-official property editor for <a href="http://hexler.net/docs/touchosc" target="_blank">TouchOSC</a> layout files.
+        p.
+            Its main purpose is allow modifying <strong>multiple controls, tabs and MIDI properties</strong> in a single step, including automated counters.
+            This way, you can finalize the MIDI and OSC configuration of existing layouts in a snap.
+            If you ever tried to setup MIDI notes for a 6x16 MultiToggle matrix or change the MIDI channel for all controls in your layout,
+            then you know the problem ;-)
+
+        p: button.info__demoBtn(data-bind="click: loadDemo") Play with Example Layout
+
+    .info__block
+        h2.info__headline What is it NOT?
+        p.
+            QuickEdit is <b>not</b> provided by or related to hexler.net.
+            It is not meant to be a replacement for their official TouchOSC editor. QuickEdit is targeted at modifying
+            attributes of existing controls and tabs, but <strong>won't add, move or delete any elements</strong>.
+
+        h2.info__headline <br/>No guarantee - use with care!
+        p.
+            Make sure you don't accidentally overwrite your original .touchosc files after editing.
+            There is unfortunately no official documentation on the .touchosc layout file format, so the exported files might
+            not be working as expected anymore.
+
+    .info__block
+        h2.info__headline How to use
+        p.
+            Just open any *.touchosc file using the button at the top, then immediately start editing.
+            Everything happens inside your browser. Nothing is uploaded to the server.
+            When you're done, export your modified .touchosc file (i.e. save it to your local disk), and use the official editor to sync it to your touch device.
+
+    .info__block
+        h2.info__headline What's more
+        p <b>TouchOSC</b> is a registered trademark of <a href="http://hexler.net/software/touchosc" target="_blank">Hexler.net</a>
+        p This software is provided "as is", without warranties of any kind.
+        p A big thank you to all authors of the JS libraries used in this project,
+            ul.info__libs
+                li: a(target="_blank", href="http://knockoutjs.com/") KnockoutJS
+                li: a(target="_blank", href="https://github.com/robatwilliams/knockout-handybits") Knockout-Handybits
+                li: a(target="_blank", href="https://github.com/brianmhunt/knockout-fast-foreach") Knockout-FastForEach
+                li: a(target="_blank", href="https://github.com/abdmob/x2js") X2JS
+                li: a(target="_blank", href="http://gildas-lormeau.github.com/zip.js/") zip.js
+                li: a(target="_blank", href="http://requirejs.org") RequireJS
+                li: a(target="_blank", href="http://underscorejs.org/") Underscore
+                li: a(target="_blank", href="http://jquery.com/") jQuery
+                li: a(target="_blank", href="http://touchpunch.furf.com/") jQuery TouchPunch
+                li: a(target="_blank", href="http://gruntjs.com/") Grunt
+                li: a(target="_blank", href="https://www.npmjs.com/package/jade") Jade (aka Pug)
+                li: a(target="_blank", href="http://lesscss.org/") Less
+                li: a(target="_blank", href="http://expressjs.com/") Express
+                li and all not named here.

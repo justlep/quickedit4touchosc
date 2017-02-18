@@ -1,0 +1,14 @@
+
+.source
+
+    // ko with: sourceXmlMode() && sourceFileHolder.xml()
+    textarea.source__code(data-bind="text: $data", autocorrect="off", spellcheck="false", readonly="readonly")
+    // /ko
+
+    // ko if: jsonMode() && layoutHolder.hasLayout()
+    textarea.source__code(data-bind="text: JSON.stringify(layoutHolder.getJsonForExport(), null, 2)", autocorrect="off", spellcheck="false")
+    // /ko
+
+    // ko if: targetXmlMode() && layoutHolder.hasLayout()
+    textarea.source__code(data-bind="text: getXmlForExport()", autocorrect="off", spellcheck="false", readonly="readonly")
+    // /ko

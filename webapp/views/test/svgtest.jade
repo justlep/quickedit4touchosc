@@ -1,0 +1,78 @@
+extends /layout/default
+
+block header
+
+block content
+    style(type="text/css").
+        body {background: #fff !important; padding: 20px;}
+        .footer {
+            display: none;
+        }
+        .factoryHelper {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+        }
+
+
+    svg(width=300, height=100, style="border:1px solid #ccc")
+        rect(x=50, y=25, width=200, height=50, fill="#ccc")
+        path(data-bind="divider: {numX: numX, numY: numY}", fill="none", style="stroke: red; stroke-width: 2px")
+
+    p: select(data-bind="options: numberOpts, value: numX")
+    p: select(data-bind="options: numberOpts, value: numY")
+
+    br
+    br
+
+    svg(width=600, height=200, style="border:1px solid #ccc; background: orange")
+        text(x="50%", y="50%", style="stroke: #fff; fill: #000; font-size: 20px; font-weight: bold",
+             alignment-baseline="middle", text-anchor="middle", dominant-baseline="middle") - &#x2716; Tabs Edit Mode -
+
+
+block javascript
+    script(src=resourceUrl('/js/lib/knockout/dist/knockout.js'))
+    script.
+        ko.bindingHandlers.divider = {
+            update: function (element, valueAccessor, ignored1, ignored2, bindingContext) {
+                var valObj = valueAccessor(),
+                    numX = ko.unwrap(valObj.numX),
+                    numY = ko.unwrap(valObj.numY),
+                    width = 200,
+                    height = 50,
+                    x = 50,
+                    y = 25,
+                    xDist = (width / numX).toFixed(2),
+                    yDist = (height / numY).toFixed(2),
+                    parts = [];
+
+                if (numX > 1) {
+                    parts.push('M ' + x + ' ' + y);
+                    for (var i = 1; i < numX; i++) {
+                        parts.push('m '+ xDist + ' 0');
+                        parts.push('l 0 ' + ((i % 2) ? height : -height));
+                    }
+                }
+
+                if (numY > 1) {
+                    parts.push('M ' + x + ' ' + y);
+                    for (var j = 1; j < numY; j++) {
+                        parts.push('m 0 ' + yDist);
+                        parts.push('l ' + ((j % 2) ? width : -width) + ' 0');
+                    }
+                }
+
+                if (parts.length) {
+                    element.setAttribute('d', parts.join(' '));
+                }
+            }
+        };
+
+        var vm = {
+            numberOpts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            numX: ko.observable(3),
+            numY: ko.observable(2)
+        };
+
+        ko.applyBindings(vm);
+

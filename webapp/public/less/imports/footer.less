@@ -1,0 +1,37 @@
+@import (reference) "variables";
+
+.footer {
+    @bgColor: darken(@bodyColor, 5%); // #787D63;
+
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top:1px solid #6c715a;
+    background-color: @bgColor;
+    padding:3px 10px;
+    .fontSmall(1.5);
+    color:#1A1D11;
+
+    strong {
+        font-weight: bold;
+        color: darken(@bgColor, 20%);
+    }
+
+    &__group {
+        display: inline;
+
+        &--dot:after {
+            content: ' · ';
+        }
+
+        &--devSwitch {
+            position: absolute;
+            right: 10px;
+            bottom: 4px;
+
+            label {
+                vertical-align: middle;
+            }
+        }
+    }
+}

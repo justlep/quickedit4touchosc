@@ -1,0 +1,84 @@
+extends /layout/default
+
+block prepend javascript
+    script(src=resourceUrl('js/lib/zipjs/WebContent/zip.js'))
+    script.
+        zip.workerScriptsPath = "#{resourceUrl('js/lib/zipjs/WebContent/')}";
+
+block header
+    h1.header__headline
+        a(href=pkg.homepage) QuickEdit for TouchOSC
+        span.header__build v#{pkg.version}, built <span data-bind="text: prettyTimecode(#{Date.now()})"></span>
+
+    // ko with: sourceFileHolder
+    label.file__label.file__label--empty(for="touchosc__file", data-bind="css: {'file__label--empty': !file()}")
+        span(data-bind="text: file() ? ('File: ' + file()) : 'Click here to load a touchosc file...'") Click here to load a touchosc file...
+        input.file__input#touchosc__file(type="file", accept=".touchosc,.zip", data-bind="value: file")
+    // /ko
+
+block content
+
+    ul.tabs__list(data-bind="css: {'tabs__list--enabled': layoutHolder.hasLayout, 'tabs__list--dev': isDevModeEnabled}")
+        li.tabs__tab--info(data-bind="css: {'tabs__list--active': infoMode}, click: infoMode") About
+        li(data-bind="css: {'tabs__list--active': detailsMode}, click: detailsMode") Layout Details
+        li(data-bind="css: {'tabs__list--active': encodingCheckMode}, click: encodingCheckMode") Encoding-Check
+        li(data-bind="css: {'tabs__list--active': visualMode}, click: visualMode") Editor
+        //- li(data-bind="css: {'tabs__list--active': tableMode}, click: tableMode") Table
+        li(data-bind="css: {'tabs__list--active': exportMode}, click: exportMode") Export
+        li.tabs__tab--dev.tabs__tab--devFirst(data-bind="css: {'tabs__list--active': sourceXmlMode}, click: sourceXmlMode") Source XML
+        li.tabs__tab--dev(data-bind="css: {'tabs__list--active': jsonMode}, click: jsonMode") JSON
+        li.tabs__tab--dev(data-bind="css: {'tabs__list--active': targetXmlMode}, click: targetXmlMode") Target XML
+
+    .tabs__content
+        <!-- ko if: infoMode -->
+        include includes/_info
+        <!-- /ko -->
+
+        div(style="display:none", data-bind="visible: sourceFileHolder.xml")
+            <!-- ko if: detailsMode -->
+            include includes/_details
+            <!-- /ko -->
+
+            <!-- ko if: encodingCheckMode -->
+            include includes/_encodingCheck
+            <!-- /ko -->
+
+            <!-- ko if: visualMode -->
+            include includes/_visual
+            <!-- /ko -->
+
+            <!-- ko if: exportMode -->
+            include includes/_export
+            <!-- /ko -->
+
+            <!-- ko if: sourceXmlMode() || targetXmlMode() || jsonMode() -->
+            include includes/_source
+            <!-- /ko -->
+
+            <!-- ko if: tableMode -->
+            include includes/_table
+            <!-- /ko -->
+
+
+        .error(data-bind="visible: error, text: error", style="color: red;")
+
+    .js-module(data-module-name="AMD/QuickEditApp")
+
+    include includes/_svgTemplates
+    include includes/_controlEditor
+    include includes/_controlFilter
+
+    //- // Auto-switch to demo on start
+    //- script.
+    //-    setTimeout(function() {
+    //-        jQuery('.info__demoBtn').click();
+    //-    }, 500);
+
+block footer
+    .footer__group
+        a(target="_blank", href=pkg.repository.url) <strong>QuickEdit</strong> source on Github
+        |  &middot;
+    .footer__group &copy; 2017 Lennart Pegel &middot;
+    .footer__group <b>TouchOSC</b> is a registered trademark of <a href="http://hexler.net/software/touchosc" target="_blank">Hexler.net</a>
+    .footer__group.footer__group--devSwitch(title="Enable additional tabs for debugging", data-bind="visible: layoutHolder.hasLayout")
+        +knockoutCheckbox('cbSwitchDevMode', "debug", 'checked: $root.isDevModeEnabled')

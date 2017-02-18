@@ -1,0 +1,9 @@
+q, blockquote, .quoted {
+    quotes: "\201E" "\201D" "\201A" "\2019";
+}
+q:before, blockquote:before, .quoted:before {
+    content: open-quote;
+}
+q:after, blockquote:after, .quoted:after {
+    content: close-quote;
+}

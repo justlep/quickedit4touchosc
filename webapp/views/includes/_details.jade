@@ -1,0 +1,32 @@
+
+.details.well
+    .well__block
+        table.details__table: tbody
+            // ko with: $root.dimensions
+            tr
+                th Dimensions:
+                td(data-bind="text: layoutWidth() + ' x ' + layoutHeight()")
+            tr
+                th Displayed Orientation:
+                td(data-bind="text: isLandscape() ? 'Landscape' : 'Portrait'")
+            // /ko
+            // ko with: layoutHolder.layout()
+            tr
+                th XML Orientation
+                td(data-bind="text: _orientation")
+            tr
+                th Mode
+                td(data-bind="text: _mode")
+            tr
+                th Custom Width
+                td(data-bind="text: $data._w || '-'")
+            tr
+                th Custom Height
+                td(data-bind="text: $data._h || '-'")
+            // /ko
+            tr
+                th base64 names:
+                td(data-bind="text: $root.sourceFileHolder.encodingInfo().namesNeedDecoding ? 'probably' : 'unlikely'")
+            tr
+                th base64 texts:
+                td(data-bind="text: $root.sourceFileHolder.encodingInfo().textsNeedDecoding ? 'probably' : 'unlikely'")

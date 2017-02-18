@@ -1,0 +1,23 @@
+
+.table.well
+    .well__block
+
+        table.table__table(data-bind="fastForEach: layoutHolder.tabPages")
+            thead
+                tr.table__tabName
+                    th(colspan="3",
+                       title="Jump to this page in the edit tab",
+                       data-bind="click: $root.gotoTabPage") Tabpage: <!-- ko text: ($index()+1) --><!-- /ko -->
+                tr
+                    th Type
+                    th Name
+                    th Text
+            tbody(data-bind="fastForEach: control")
+                // ko if: $root.controlFilter.isControlVisible($data)
+                tr
+                    td(data-bind="text: typeName")
+                    td
+                        .table__colorBox(data-bind="style: {background: colorCode || 'transparent'}")
+                        span(data-bind="text: props._name")
+                    td(data-bind="text: props._text")
+                // /ko

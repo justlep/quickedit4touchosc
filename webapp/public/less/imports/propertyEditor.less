@@ -1,0 +1,129 @@
+@import (reference) "variables";
+@import (reference) "mixins";
+
+.propertyEditor {
+    position: relative;
+    white-space: nowrap;
+
+    .textFieldStyle() {
+        padding: 0 3px;
+        .editorTextFieldStyle();
+    }
+
+    &&--multiEdit {
+        .overlayShadow();
+        padding: 10px;
+        position: absolute;
+        z-index: 400;
+        border: 1px solid #666;
+        border-radius: 0 5px 5px;
+        top: 50%;
+        left: 97%;
+        background: lighten(@bodyColor, 15%) url(../../images/propEditorCorner.png) 0 0 no-repeat;
+
+        .propertyEditor__mutltiHeadline {
+            display: block;
+            background-color: lighten(@bodyColor, 10%);
+            padding: 3px;
+            margin-bottom: 5px;
+        }
+    }
+
+    &__mutltiHeadline {
+        display: none;
+    }
+
+    &&--multiEdit &__text {
+        width: auto;
+    }
+
+    & &__text {
+        display: block;
+        .textFieldStyle();
+        width: 105px;
+        margin-bottom: 5px;
+    }
+
+    button {
+        border-radius: 3px;
+        border: 1px solid darken(@bodyColor, 20%);
+    }
+
+    button&__ok {
+        &--disabled {
+            .disabledButton();
+        }
+    }
+
+    &__cancel {
+
+    }
+
+    &__colors {
+        width: 115px;
+        white-space: normal;
+        margin-bottom: 2px;
+
+        li {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            overflow: hidden;
+            cursor: pointer;
+
+            &:hover {
+                border: 2px solid #333;
+            }
+        }
+    }
+
+    &__counter {
+        padding-bottom: 7px;
+        margin: 3px 0;
+
+        &Toggle {
+            padding: 10px 0 3px;
+            font-weight:bold;
+
+            > label {
+                opacity: 0.8;
+            }
+        }
+
+        label {
+            font-weight: normal;
+        }
+
+        th, td {
+            border: none;
+            padding: 2px 0 2px 5px;
+
+            &:first-child {
+                padding-left: 0;
+            }
+        }
+
+        th {
+            font-weight: normal;
+            padding-bottom: 0;
+            padding-top: 5px;
+        }
+
+        & &Start {
+            .textFieldStyle();
+            width: 40px;
+            text-align: center;
+        }
+    }
+
+    &__preview {
+        padding-top: 7px;
+        border-top: 1px solid lighten(@bodyColor, 00%);
+        margin: 7px -10px 0;
+        text-align: center;
+
+        label {
+            font-weight: normal;
+        }
+    }
+}

@@ -1,0 +1,30 @@
+
++panel('$root.controlFilter', 'controlFilter', 'Filter')
+
+    table.controlFilter__items: tbody(data-bind="fastForEach: options")
+        tr.controlFilter__item(data-bind="css: {'controlFilter__item--zero': !count(), 'controlFilter__item--disabled': !isVisible()}")
+            td
+                .roundCheckboxWrap
+                    input.roundCheckbox(type="checkbox", data-bind="attr: {id: 'filterCb__' + controlType}, checked: isVisible")
+                    label(data-bind="attr: {for: 'filterCb__' + controlType}")
+                label(data-bind="attr: {for: 'filterCb__' + controlType}, text: controlType")
+            td
+                span.controlFilter__itemCount(title="Solo", data-bind="text: count, click: $parent.soloType")
+
+    .controlFilter__actions
+        button(data-bind="click: reset") Reset
+        button(data-bind="click: showAllButLabels", title="All but labels") All but labels
+        button(data-bind="click: hideAll") All OFF
+
+    .controlFilter__colors(title="Use [Shift]+Click to solo/unsolo a single color")
+        ul
+            // ko fastForEach: $root.controlFilter.ALL_COLORS
+            li.controlFilter__color(data-bind="css: {'controlFilter__color--allowed': $root.controlFilter.allowedColors[$data]()}, " +
+                                              "style: {background: $data}, click: $root.controlFilter.colorClick")
+            // /ko
+
+    .controlFilter__moreOpts
+        .controlFilter__nonZero(data-bind="visible: $root.isDevModeEnabled")
+            +knockoutCheckbox('cbUnusedTypes', "Hide unused types", 'checked: isCountFilterEnabled')
+        span(title="Ignore labels when making selections in the layout")
+            +knockoutCheckbox('cbNoLabelSelect', "Don't select labels", 'checked: $root.controlSelection.ignoreLabels')

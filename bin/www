@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+
+process.title = 'HtmlDummy';
+
+const path = require('path'),
+      fs = require('fs'),
+      requiredWorkingDirectory = path.resolve(__dirname, '../webapp'),
+      pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../package.json'))),
+      PORT = pkg.config.port;
+
+try {
+    process.chdir(requiredWorkingDirectory);
+    console.log('Working directory: ' + requiredWorkingDirectory);
+} catch (err) {
+    console.log('Could not change working directory: ' + err);
+    process.exit(1);
+}
+
+console.info(`Starting webapp (pid is ${process.pid})...`);
+
+var app = require('../webapp/app'),
+    debug = require('debug')('someapp:server'),
+    http = require('http'),
+    server = http.createServer(app),
+    HANDLERS = {
+        SERVER_LISTENING: () => {
+            var addr = server.address(),
+                bind = (typeof addr === 'string') ? `pipe ${addr}` : `port ${addr.port}`;
+
+            console.log('Listening on ' + bind);
+        },
+        SERVER_ERROR: error => {
+            if (error.syscall !== 'listen') {
+                throw error;
+            }
+
+            // handle specific listen errors with friendly messages
+            switch (error.code) {
+                case 'EACCES':
+                    console.error(`Port ${PORT} requires elevated privileges`);
+                    process.exit(1);
+                    break;
+                case 'EADDRINUSE':
+                    console.error(`Port ${PORT} is already in use`);
+                    process.exit(1);
+                    break;
+                default:
+                    throw error;
+            }
+        },
+        PROCESS_PRE_EXIT: err => {
+            if (err) {
+                console.log(err.stack);
+            }
+            console.log('Cleanup started...');
+            process.exit();
+        },
+        PROCESS_UNCAUGHT_EXCEPTION: err => {
+            console.error('Uncaught exception:');
+            if (err) {
+                console.log(err.stack);
+            }
+            process.exit();
+        },
+        PROCESS_EXIT: () => {
+            console.log('Exiting.');
+        }
+    };
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+server.listen(PORT);
+server.on('error', HANDLERS.SERVER_ERROR);
+server.on('listening', HANDLERS.SERVER_LISTENING);
+
+// Proper exit & exception handling..
+// http://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
+process.on('exit', HANDLERS.PROCESS_EXIT);
+process.on('SIGHUP', HANDLERS.PROCESS_PRE_EXIT);
+process.on('SIGINT', HANDLERS.PROCESS_PRE_EXIT);
+process.on('SIGTERM', HANDLERS.PROCESS_PRE_EXIT);
+process.on('uncaughtException', HANDLERS.PROCESS_UNCAUGHT_EXCEPTION);

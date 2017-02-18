@@ -1,0 +1,6 @@
+
+.fa-right-open:before { content: '\e800'; } /* '' */
+.fa-down-open:before { content: '\e801'; } /* '' */
+.fa-left-open:before { content: '\e802'; } /* '' */
+.fa-up-open:before { content: '\e803'; } /* '' */
+.fa-move:before { content: '\f047'; } /* '' */

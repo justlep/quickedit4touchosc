@@ -1,0 +1,79 @@
+
+//- The main SVG template
+script#svgTemplate(type="text/html")
+    //- Knockout-context: Visual
+    svg.svg__root(data-bind="svgRoot: true, if: $root.layoutHolder.needsRedraw, css: {'svg__root--tabsEditMode': $root.controlEditor.isTabPageMode}")
+        text.svg__editModeNotice(x="50%", y="50%", alignment-baseline="middle", text-anchor="middle", dominant-baseline="middle") &#x2716;
+        g.svg__tabsAreaGroup(data-bind="svgTabsAreaGroup: true")
+            svg.svg__tabsArea(data-bind="svgTabsArea: true, fastForEach: $root.layoutHolder.tabPages")
+                rect.svg__tab(data-bind="svgTab: true, click: $root.visual.currentTabPage, css: {'svg__tab--selected': $data === $root.visual.currentTabPage()}")
+        g.svg__controlsArea(data-bind="svgControlsArea: true, fastForEach: visibleControlsInCurrentTab")
+            svg.svg__controlWrap(data-bind="attr: {x: props._x, y: props._y, width: props._w, height: props._h}")
+                g(data-bind="template: {name: $data.svgTemplateId, templateEngine: ko.svgTemplateEngine.instance}")
+                rect.svg__selectable(x=0, y=0, width="100%", height="100%",
+                                     data-bind="attr: {id: 'svgSelectable_' + $data.uid}, css: {'svg__selectable--selected': $root.controlSelection.isControlSelected($data)}")
+
+//- Knockout context for all templates: json `control` object < Visual
+
+mixin svgControlTemplate(controlTypePattern)
+    script.svg__controlTemplate(id='controlSvgTpl__'+nextId(), type="text/html", data-typepattern=controlTypePattern)
+        block
+
+//------------------------ control-type specific svg templates ------------------------------
+
+
+
+//- The fallback template
++svgControlTemplate('')
+    rect.svg__control(x=0, y=0, width="100%", height="100%",
+                      data-bind="style: {fill: colorCode}")
+
++svgControlTemplate('^(label|battery|time)')
+    rect.svg__control(x=0, y=0, rx=4, ry=4, width="100%", height="100%",
+                      data-bind="style: {fill: ($data.props._background ? '#231C1C' : 'transparent'), 'stroke-width': 1, " +
+                                "stroke: ($data.props._outline ? colorCode : 'transparent')}, " +
+                                "css: {'svg__label--markedEmpty': (!$data.props._text && !$data.props._background && !$data.props._outline && $parent.config.markEmptyLabels())}")
+    text(x="50%", y="50%", alignment-baseline="middle", text-anchor="middle", dominant-baseline="middle",
+         data-bind="svgLabel: true, text: (($data.getFixText && $data.getFixText()) || $data.props._text), attr: {'font-size': $data.props._size, fill: colorCode}")
+
++svgControlTemplate('^(toggle|multitoggle)')
+    rect.svg__control(x=0, y=0, width="100%", height="100%",
+                      data-bind="style: {fill: '#444', opacity: 0.5}, attr: {rx: 5, ry: 5, stroke: colorCode, 'stroke-width': 2}")
+    // ko if: $data.needsGrid
+    path(data-bind="multiDivider: true, attr: {stroke: colorCode}", fill="none", style="stroke-width: 2px")
+    // /ko
+
++svgControlTemplate('^(push|multipush)')
+    rect.svg__control(x=0, y=0, width="100%", height="100%",
+                      data-bind="style: {fill: colorCode}, attr: {rx: 5, ry: 5}")
+    // ko if: $data.needsGrid
+    path(data-bind="multiDivider: true", fill="none", style="stroke: #222; stroke-width: 2px")
+    // /ko
+
++svgControlTemplate('^(fader|multifader)')
+    rect.svg__control(x=0, y=0, width="100%", height="100%",
+                      data-bind="style: {fill: '#444', opacity: 0.5}, attr: {rx: 3, ry: 3, stroke: colorCode, 'stroke-width': 2}")
+    rect(rx=3, ry=3, data-bind="attr: {fill: colorCode}, faderHandle: false")
+    path(data-bind="faderHandle: true", fill="none", style="stroke: #222; stroke-width: 2px")
+
++svgControlTemplate('^xy|multixy')
+    rect.svg__control(x=0, y=0, width="100%", height="100%",
+                      data-bind="style: {fill: '#444', opacity: 0.5}, attr: {rx: 3, ry: 3, stroke: colorCode, 'stroke-width': 2}")
+    line(stroke-width=2, y1=0, y2='100%', data-bind="attr: {stroke: colorCode, x1: ($data.props._inverted_x ? '90%' : '10%'), x2: ($data.props._inverted_x ? '90%' : '10%')}")
+    line(stroke-width=2, x1=0, x2='100%', data-bind="attr: {stroke: colorCode, y1: ($data.props._inverted_y ? '90%' : '10%'), y2: ($data.props._inverted_y ? '90%' : '10%')}")
+    circle(r="5%", data-bind="attr: {r: ($data.props._type==='multixy' ? '4%' : '5%'), fill: colorCode, cx: ($data.props._inverted_x? '90%' : '10%'), cy: ($data.props._inverted_y? '90%' : '10%')}")
+    // ko if: ($data.props._type==="multixy")
+    circle(r="7%", fill='transparent', stroke-width=1, data-bind="attr: {stroke: colorCode, cx: ($data.props._inverted_x? '90%' : '10%'), cy: ($data.props._inverted_y? '90%' : '10%')}")
+    // /ko
+
++svgControlTemplate('^encoder')
+    circle.svg__control.svg__encoder(cx='50%', cy="50%", r="50%", fill="#333", stroke-width=4, data-bind="attr: {stroke: colorCode}")
+    circle.svg__control(cx='50%', cy="50%", r="40%", stroke-width=1, fill="transparent", data-bind="attr: {stroke: colorCode}")
+
++svgControlTemplate('^rotary')
+    circle.svg__control(cx='50%', cy="50%", r="50%", stroke="#aaa", stroke-width=2, stroke-dasharray="5,1", data-bind="attr: {fill: colorCode}")
+    path(stroke="#000", fill="transparent", opacity="0.4", data-bind="rotaryHandle:true")
+    line(x1='50%', y1='50%', stroke-width="5" stroke="#fff", data-bind="rotaryHandle:false")
+
++svgControlTemplate('^led')
+    circle.svg__control.svg__led(cx='50%', cy="50%", r="50%", data-bind="attr: {fill: colorCode}")

@@ -1,0 +1,121 @@
+@import (reference) "variables";
+@import (reference) "mixins";
+
+.controlFilter {
+    @sidePadding: 15px;
+    @background: #8F966E;
+    @boxBorder: 1px solid #333;
+    @border: 1px solid darken(@bodyColor, 10%);
+
+    left: 80%;
+
+    &__items {
+        width: 100%;
+
+        td:last-child {
+            text-align: right;
+        }
+    }
+
+    &__item {
+        &:nth-child(odd) td {
+            background-color: lighten(@bodyColor, 10%);
+        }
+
+        td {
+            padding: 2px 0 4px;
+            font-weight: bold;
+            color: #222;
+
+            &:first-child {
+                border-radius: 15px 0 0 15px;
+            }
+            &:last-child {
+                border-radius: 0 15px 15px 0;
+            }
+        }
+
+        &--zero label {
+            text-decoration: line-through;
+            font-weight: normal;
+        }
+
+        &--disabled td > label {
+            opacity: 0.5;
+        }
+
+        &Count {
+            display: inline-block;
+            border-radius: 10px;
+            background: lighten(@bodyColor, 20%);
+            .fontTiny(1.5);
+            color: #494e34;
+            padding: 0 10px;
+            cursor: pointer;
+
+            &:hover {
+                color: lighten(#494e34, 10%);
+            }
+        }
+
+        &--zero &Count {
+            display: none;
+        }
+    }
+
+    &__moreOpts {
+        border-top: 1px dashed #666;
+        padding: 8px 0;
+    }
+
+    &__nonZero {
+        padding-bottom: 5px;
+    }
+
+    &__actions {
+        padding: 5px 0 8px;
+        border-bottom: 1px dashed #666;
+        white-space: nowrap;
+
+        button {
+            margin-right: 2px;
+            .fontSmall(1.8);
+
+            &:last-child {
+                margin: 0;
+            }
+        }
+    }
+
+    &__colors {
+        padding: 10px 0 9px;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    &__color {
+        @size: 16px;
+        @sizeInactive: 4px;
+        @sizeHover: 8px;
+        @borderWidthInactive: (@size - @sizeInactive) / 2;
+        @borderWidthHover: (@size - @sizeHover) / 2;
+
+        display: inline-block;
+        width: @size;
+        height: @size;
+        margin-right: 3px;
+        overflow: hidden;
+        cursor: pointer;
+        border: @borderWidthInactive solid @background;
+
+        &:last-child {
+            margin-right: 0;
+        }
+        &:hover {
+            border-width: @borderWidthHover;
+        }
+        &--allowed {
+            border: none !important;
+        }
+    }
+}

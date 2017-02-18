@@ -1,0 +1,22 @@
+mixin panel(koContext, rootClassName, headlineHtml)
+    <!-- ko with: #{koContext} -->
+    div(class=(rootClassName + " panel js-module"),
+        style="display: none",
+        data-bind="visible: isVisible",
+        data-module-name="AMD/util/Draggable"
+        data-handle-selector=".panel__headline")
+
+        .panel__headline(data-bind="dblClick: isOpen.toggle") !{headlineHtml}
+            span.fa-move
+
+        .panel__toggle(data-bind="click: isOpen.toggle, css: {'fa-down-open': isOpen, 'fa-right-open': !isOpen()}")
+
+        div(data-bind="if: isOpen")
+
+            .panel__content
+
+                block
+
+            .panel__close(data-bind="click: isOpen.toggleOff") Close
+
+    <!-- /ko -->

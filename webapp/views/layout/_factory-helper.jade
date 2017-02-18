@@ -1,0 +1,8 @@
+if !renderToFile
+
+    p.factoryHelper(style="font-size: 12px; text-align:right;padding:5px 0;margin-top: 10px;border-top:1px dotted #eee; background: rgba(0,0,0,0.5)")
+        if isLivereloadEnabled
+            script(src="//localhost:#{livereloadPort}/livereload.js", async)
+            span(style="color:green") LiveReload is enabled
+            | &nbsp;|&nbsp;
+        a(href="http://localhost:#{pkg.config.port}/_sitemap.html") Sitemap

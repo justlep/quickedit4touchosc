@@ -1,0 +1,153 @@
+// Generating CSS styles for HTML checkboxes that look like toggled switches
+// Based on http://callmenick.com/_development/css-toggle-switch/
+// (!) Requires `box-sizing: border-box
+//
+// Example (LESS):
+//    .toggle__round {
+//        .createRoundToggle(@width: 60px)
+//    }
+//    .toggle__flatRound {
+//        .createFlatRoundToggle(@width: 60px)
+//    }
+//
+//  HTML:
+//    <span class="toggle__roundWrap">
+//      <input type="checkbox" id="myCheckbox" class="toggle__round">
+//      <label for="myCheckbox"><!-- This label MUST be empty --></label>
+//    </span>
+//
+
+.baseToggle(@wrapClassWidth: auto) {
+    position: absolute;
+    margin-left: -9999px;
+    visibility: hidden;
+
+    &Wrap {
+        display: inline-block;
+        width: @wrapClassWidth;
+        vertical-align: middle;
+        overflow: hidden;
+    }
+
+    +label {
+        display: block;
+        position: relative;
+        cursor: pointer;
+        outline: none;
+        user-select: none;
+    }
+
+    &:disabled +label {
+        opacity: 0.5;
+        filter: grayscale(70%);
+    }
+}
+
+.createRoundToggle(@width:120px, @bgColorOn: #8ce196, @borderColor: #ccc, @wrapClassMarginRight: 5px) {
+    .baseToggle(@wrapClassWidth: (@width + @wrapClassMarginRight));
+
+    @height: (@width / 2);
+    @animationTime: 0.15s;
+    @shadowSize: 10px;
+    @smallerShadowThresholdWidth: 50px;
+
+    + label {
+        padding: 2px;
+        width: @width;
+        height: @height;
+        background-color: @borderColor;
+        border-radius: @height;
+
+        &:before, &:after {
+            display: block;
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            bottom: 1px;
+            content: '';
+        }
+
+        &:before {
+            right: 1px;
+            background-color: #f1f1f1;
+            border-radius: @height;
+            transition: background @animationTime;
+        }
+
+        &:after {
+            width: (@height - 2px);
+            background-color: #fff;
+            border-radius: 100%;
+            transition: margin @animationTime;
+            & when (@height > @smallerShadowThresholdWidth) {
+                box-shadow:  0 2px 5px rgba(0, 0, 0, 0.3);
+            }
+            & when (@height <= @smallerShadowThresholdWidth) {
+                box-shadow:  0 1px 2px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+    }
+
+    &:checked +label {
+        &:before {
+            background-color: @bgColorOn;
+        }
+        &:after {
+            margin-left: @height;
+        }
+    }
+}
+
+.createFlatRoundToggle(@width:120px, @colorOn: #8ce196, @colorOff:  #ccc, @flatBackground: #fff, @borderWidth: 2px, @wrapClassMarginRight: 5px) {
+    .baseToggle(@wrapClassWidth: (@width + @wrapClassMarginRight));
+
+    @height: (@width / 2);
+    @animationTime: 0.15s;
+
+    + label {
+        padding: @borderWidth;
+        width: @width;
+        height: @height;
+        background-color: @colorOff;
+        border-radius: @height;
+        transition: background @animationTime;
+
+        &:before, &:after {
+            display: block;
+            position: absolute;
+            content: '';
+        }
+
+        &:before {
+            top: @borderWidth;
+            left: @borderWidth;
+            bottom: @borderWidth;
+            right: @borderWidth;
+            border-radius: @height;
+            background-color: @flatBackground;
+            transition: background @animationTime;
+        }
+
+        &:after {
+            @innerPadding: (2 * @borderWidth);
+            @size: (@height - (2 * @innerPadding));
+            top: @innerPadding;
+            left: @innerPadding;
+            bottom: @innerPadding;
+            width: @size;
+            border-radius: @size;
+            background-color: @colorOff;
+            transition: margin @animationTime, background @animationTime;
+        }
+    }
+
+    &:checked +label {
+        background-color: @colorOn;
+
+        &:after {
+            margin-left: @height;
+            background-color: @colorOn;
+        }
+    }
+}

@@ -1,0 +1,35 @@
+doctype html
+html
+    head
+        block head
+            include _head
+
+        block css
+            link(rel='stylesheet', href=resourceUrl('css/style.min.css'))
+
+        include _mixins
+
+    body
+        header.header
+            block header
+                | some header content
+
+        article
+            block content
+                | some article content
+
+        footer.footer
+            block footer
+                include _footer
+
+        block javascript
+            script(src=resourceUrl('/js/lib/jquery-3.1.0.min.js'))
+            script(src=resourceUrl('/js/lib/jquery-ui-1.12.1.custom/jquery-ui.min.js'))
+            script(src=resourceUrl('/js/lib/touchpunch/jquery.ui.touch-punch.min.js'))
+            script(src=resourceUrl('/js/lib/knockout/dist/knockout.js'))
+            script(src=resourceUrl('/js/requirejsAndConfig.js'))
+
+            if renderToFile
+                script(src=resourceUrl('/js/bundle.js'))
+
+        include _factory-helper

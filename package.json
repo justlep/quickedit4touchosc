@@ -1,0 +1,56 @@
+{
+  "name": "quickedit4touchosc",
+  "version": "0.0.9",
+  "description": "An inofficial online editor for .touchosc files",
+  "main": "Gruntfile.js",
+  "engines": {
+    "node": ">=6.1"
+  },
+  "scripts": {
+    "start": "node bin/www",
+    "test": "grunt build"
+  },
+  "homepage": "http://justlep.github.io/quickedit4touchosc/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justlep/quickedit4touchosc.git"
+  },
+  "author": "Lennart Pegel <github@justlep.net>",
+  "license": "SEE IN LICENSE.txt",
+  "dependencies": {},
+  "devDependencies": {
+    "body-parser": "~1.16.1",
+    "cloneextend": "0.0.3",
+    "compression": "~1.6.2",
+    "debug": "~2.6.1",
+    "express": "~4.14.1",
+    "expressjs.routes.autoload": "~0.1.7",
+    "glob": "~7.1.0",
+    "grunt": "~1.0.1",
+    "grunt-cli": "~1.2.0",
+    "grunt-concurrent": "~2.3.0",
+    "grunt-contrib-clean": "~1.0.0",
+    "grunt-contrib-compress": "~1.4.1",
+    "grunt-contrib-concat": "~1.0.1",
+    "grunt-contrib-copy": "~1.0.0",
+    "grunt-contrib-jshint": "~1.1.0",
+    "grunt-contrib-less": "~1.4.0",
+    "grunt-contrib-requirejs": "~1.0.0",
+    "grunt-contrib-watch": "~1.0.0",
+    "grunt-exec": "~1.0.1",
+    "grunt-newer": "~1.2.0",
+    "grunt-spritesmith": "~6.4.0",
+    "grunt-wait-server": "~0.3.0",
+    "jade": "~1.11.0",
+    "less-plugin-autoprefix": "~1.5.1",
+    "load-grunt-config": "~0.19.2",
+    "morgan": "~1.8.1",
+    "time-grunt": "~1.4.0",
+    "underscore": "~1.8.3"
+  },
+  "config": {
+    "port": 8787,
+    "livereloadPort": 9998,
+    "renderToFileUrlParam": "writeHtml"
+  }
+}

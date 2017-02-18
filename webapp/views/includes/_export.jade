@@ -1,0 +1,10 @@
+
+.export.well
+    .well__block.well__block--full
+        .export__download(data-bind="if: layoutHolder.hasLayout")
+            label
+                strong Filename:
+                input.export__filename(type="text", data-bind="textInput: exportFilename")
+                button.export__exportBtn(data-bind="click: startExport") Export now
+                a#hiddenExportLink(style="display:none", data-bind="attr: {download: exportFilename, href: exportUrl}") DL
+

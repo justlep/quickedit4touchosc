@@ -1,0 +1,34 @@
+
+div.visual(data-bind="with: visual.isEnabled() && visual")
+
+    .tabs__submenu
+        +knockoutCheckbox('cbShowTooltips', 'Show Tooltips', 'checked: config.isTooltipEnabled')
+        +knockoutCheckbox('cbMarkEmptyLabel', 'Mark empty labels', 'checked: config.markEmptyLabels')
+
+        span.visual__zoom(data-bind="with: config") Zoom:
+            button(data-bind="click: zoomOut") -
+            button(data-bind="click: zoomReset, text: (zoom() * 100) + '%'", title="Reset to 100%")
+            button(data-bind="click: zoomIn") +
+
+        span.visual__defaultChannel(data-bind="with: $root.controlEditor.midiEditor")
+            label Default Channel:
+                select(data-bind="options: midiChannelOptions, value: defaultMidiChannel")
+            span(data-bind="with: defaultMidiChannel")
+                button(data-bind="click: $root.setGlobalChannel", title="Updates the MIDI channel of all (existing) controls") Apply to controls
+
+    ul.visual__tabPages(data-bind="fastForEach: $root.layoutHolder.tabPages")
+        li.visual__tabPage(data-bind="click: $parent.currentTabPage, " +
+                                    "css: {'visual__tabPage--active': $data === $parent.currentTabPage()}, " +
+                                    "text: $data._name || ($index() + 1)")
+
+    .svg__container(data-bind="svgContainer: true")
+        <!-- ko template: {name: 'svgTemplate', templateEngine: ko.svgTemplateEngine.instance} --><!-- /ko -->
+
+    .visual__howto
+        span(data-bind="ifnot: $root.controlEditor.isTabPageMode").
+            Select by click + drag / touch + move.<br>
+            Hold [Ctrl] and drag to add more to a selection. [Ctrl]+click to toggle.
+        span(data-bind="if: $root.controlEditor.isTabPageMode").
+            Selections are <strong>disabled in Edit Tabs</strong> mode.
+
+    include _controlTooltip

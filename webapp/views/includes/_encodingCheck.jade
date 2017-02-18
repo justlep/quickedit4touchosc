@@ -1,0 +1,43 @@
+
+.encodingCheck(data-bind="with: encodingCheck")
+
+    h2.encodingCheck__headline.
+        Encoding issues in touchosc files may cause certain property values to look weird.
+        <p>Such `suspicious` values are listed here together with possible fixes.</p>
+        <p>If a suggested fix looks right, click it and press `Apply selected fixes` when you finished the list.</p>
+
+    div
+
+        // ko if: suspiciousProperties().length
+        table.encodingCheck__table
+            thead: tr
+                th Element<br/>Type
+                th Property
+                th Suspicious<br>Value
+                th Potential<br>fix(es)
+            tbody.encodingCheck__suspicious(data-bind="click: onClick, fastForEach: suspiciousProperties"): tr
+                td(data-bind="text: typeName")
+                td(data-bind="text: propName")
+                td(data-bind="with: originalValue"): .encodingCheck__originalValue(data-bind="text: $data, css: {'encodingCheck__originalValue--fixed': $data !== $parent.valueToUse()}")
+                td(data-bind="fastForEach: fixes"): .encodingCheck__fix(data-bind="text: $data, css: {'encodingCheck__fix--selected': $data === $parent.valueToUse()}")
+            tbody: tr: td.encodingCheck__applyTd(colspan=4, style="text-align: right")
+                button(data-bind="click: applySelectedFixes") Apply selected fixes
+        // /ko
+
+    div
+
+        // ko if: fixedProperties().length
+        table.encodingCheck__table.encodingCheck__table--fixes
+            caption Applied Fixes
+            thead: tr
+                th Element<br/>Type
+                th Property
+                th Suspicious<br>Value
+                th Replaced with fixed value
+            tbody.encodingCheck__fixed(data-bind="fastForEach: fixedProperties")
+                tr
+                    td(data-bind="text: typeName")
+                    td(data-bind="text: propName")
+                    td(data-bind="with: originalValue"): .encodingCheck__originalValue.encodingCheck__originalValue--fixed(data-bind="text: $data")
+                    td: .encodingCheck__fix.encodingCheck__fix--applied(data-bind="text: valueToUse")
+        // /ko

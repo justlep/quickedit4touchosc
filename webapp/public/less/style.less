@@ -1,0 +1,139 @@
+//@import 'https://fonts.googleapis.com/css?family=Droid+Sans';
+//@import 'https://fonts.googleapis.com/css?family=Source+Sans+Pro';
+//@import 'https://fonts.googleapis.com/css?family=Lato';
+//@import 'https://fonts.googleapis.com/css?family=Open+Sans';
+//@import url('https://fonts.googleapis.com/css?family=Raleway:400,400i,700,700i');
+//@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700,700i&subset=latin-ext');
+//@import url('https://fonts.googleapis.com/css?family=Hind:400,700&subset=latin-ext');
+//@import url('https://fonts.googleapis.com/css?family=Catamaran:400,700&subset=latin-ext');
+@import "imports/reset";
+@import (less) "../css/spritesheet-generated.css";
+// @import "../font-awesome-4.6.3/less/font-awesome"; // ---> http://fontawesome.io/icons/
+@import (less) "../fontello/css/fa-custom.css";       // ---> http://fontello.com/
+@import (less) "../js/lib/jquery-ui-1.12.1.custom/jquery-ui.css";
+@import "imports/variables";
+@import (reference) "imports/mixins";
+@import "imports/quotes";
+@import "imports/header";
+@import "imports/footer";
+@import "imports/file";
+@import "imports/panel";
+@import "imports/buttons";
+@import "imports/export";
+@import "imports/tabs";
+@import "imports/details";
+@import "imports/source";
+@import "imports/encodingCheck";
+@import "imports/visual";
+@import "imports/table";
+@import "imports/toggles";
+@import "imports/controlFilter";
+@import "imports/controlEditor";
+@import "imports/controlTooltip";
+@import "imports/svg";
+@import "imports/propertyEditor";
+@import "imports/midiEditor";
+@import "imports/info";
+@import "imports/well";
+
+body {
+    font-family: Tahoma, Geneva, sans-serif;
+    background-color:#838b63;
+    margin: 0;
+    padding: 0 0 400px;
+    .fontNormal(1);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+ul, li, p, header {
+    margin: 0;
+    padding: 0;
+}
+ul, li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+label {
+    font-size: @fontSizeSmall;
+    cursor: pointer;
+}
+
+a {
+    color: @link-color;
+}
+a, a:hover {
+    text-decoration: none;
+}
+a:hover {
+    color: lighten(@link-color, 10%);
+}
+
+.main-content {
+    margin: 20px 10px;
+}
+
+input[type="text"] {
+    line-height: 1.5em;
+    border-radius: 5px;
+    border: 1px solid #666;
+    padding: 3px 10px;
+}
+
+textarea {
+    border-radius: 5px;
+    border: 1px solid #666;
+    padding: 3px;
+}
+
+.spinner {
+    min-height: 50px;
+    background: transparent url(../images/spinner.gif) center center no-repeat;
+    overflow: hidden;
+
+    > * {
+        display: none;
+    }
+}
+.smallSpinner {
+    background-image: url(../images/spinner-small.gif);
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 11px;
+    min-width: 16px;
+}
+
+.roundCheckbox {
+    .createRoundToggle(@width: 30px, @wrapClassMarginRight: 2px, @borderColor: darken(@bodyColor, 10%));
+
+    &Wrap + label {
+        vertical-align: middle;
+    }
+}
+
+.inBrackets {
+    &:before {
+        content: '(';
+    }
+    &:after {
+        content: ')';
+    }
+}
+
+.noselect,
+label {
+    user-select: none;
+}
+
+body select {
+    border: 1px solid #666;
+    border-radius: 4px;
+    .fontNormal(1);
+    padding: 1px 0px;
+    cursor: pointer;
+}
+

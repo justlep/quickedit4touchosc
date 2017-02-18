@@ -1,0 +1,73 @@
+@import (reference) "variables";
+@import (reference) "mixins";
+
+.panel {
+    @sidePadding: 15px;
+    @background: #8F966E;
+    @boxBorder: 1px solid #333;
+    @border: 1px solid darken(@bodyColor, 10%);
+
+    position: absolute;
+    top: 20%;
+    left: 450px;
+    border: @boxBorder;
+    border-radius: 5px 5px 0 0;
+    background: @background;
+    .overlayShadow();
+    z-index: 1000;
+    overflow: hidden;
+    user-select: none;
+
+    &__headline {
+        font-weight: bold;
+        line-height: 14px;
+        padding: 7px 100px 7px @sidePadding;
+        background-color: lighten(@background, 10%);
+        cursor: pointer;
+        border-radius: 5px 5px 0 0;
+        white-space: nowrap;
+
+        > .fa-move {
+            visibility: hidden;
+            margin-left: 5px;
+            color: darken(@bodyColor, 10%);
+            font-weight: normal;
+        }
+
+        &:hover > .fa-move {
+            visibility: visible;
+        }
+    }
+
+    &__toggle {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 7px 10px 7px 15px;
+        cursor: pointer;
+        &:hover {
+            color: #444;
+        }
+    }
+
+    &.controlEditor &__toggle {
+        padding: 14px 10px 11px 15px;
+    }
+
+    &__content {
+        padding: 10px @sidePadding 0;
+        border-top: @border;
+        border-bottom: @border;
+    }
+
+    &__close {
+        padding: 10px @sidePadding;
+        cursor: pointer;
+        text-align: center;
+        background-color: lighten(@background, 10%);
+        &:hover {
+            background-color: lighten(@background, 15%);
+        }
+    }
+
+}

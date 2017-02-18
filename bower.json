@@ -1,0 +1,21 @@
+{
+  "name": "quickedit4touchosc",
+  "version": "0.0.1",
+  "authors": [
+    "Lennart Pegel <github@justlep.net>"
+  ],
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-mousewheel": "~3.1.13"
+  }
+}

@@ -1,0 +1,6 @@
+
+mixin knockoutCheckbox(id, labelText, databind)
+    .roundCheckboxWrap
+        input.roundCheckbox(id=id, type="checkbox", data-bind=databind)
+        label(for=id)
+    label(for=id) #{labelText}
