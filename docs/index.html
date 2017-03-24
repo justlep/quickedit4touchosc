@@ -13,7 +13,7 @@
   </head>
   <body>
     <header class="header">
-      <h1 class="header__headline"><a href="http://justlep.github.io/quickedit4touchosc/">QuickEdit for TouchOSC</a><span class="header__build">v0.0.9, built <span data-bind="text: prettyTimecode(1487433523349)"></span></span></h1>
+      <h1 class="header__headline"><a href="http://justlep.github.io/quickedit4touchosc/">QuickEdit for TouchOSC</a><span class="header__build">v0.0.9, built <span data-bind="text: prettyTimecode(1490392330295)"></span></span></h1>
       <!-- ko with: sourceFileHolder-->
       <label for="touchosc__file" data-bind="css: {'file__label--empty': !file()}" class="file__label file__label--empty"><span data-bind="text: file() ? ('File: ' + file()) : 'Click here to load a touchosc file...'">Click here to load a touchosc file...</span>
         <input id="touchosc__file" type="file" accept=".touchosc,.zip" data-bind="value: file" class="file__input">
@@ -129,28 +129,27 @@
                     <td data-bind="text: $data._h || '-'"></td>
                   </tr>
                   <!-- /ko-->
-                  <tr>
-                    <th>base64 names:</th>
-                    <td data-bind="text: $root.sourceFileHolder.encodingInfo().namesNeedDecoding ? 'probably' : 'unlikely'"></td>
-                  </tr>
-                  <tr>
-                    <th>base64 texts:</th>
-                    <td data-bind="text: $root.sourceFileHolder.encodingInfo().textsNeedDecoding ? 'probably' : 'unlikely'"></td>
-                  </tr>
                 </tbody>
               </table>
             </div>
           </div><!-- /ko -->
           <!-- ko if: encodingCheckMode -->
           <div data-bind="with: encodingCheck" class="encodingCheck">
+            <div data-bind="with: $root.sourceFileHolder.encodingInfo() &amp;&amp; $root.sourceFileHolder" class="tabs__submenu"><!-- ko with: $root.sourceFileHolder.encodingInfo() && $root.sourceFileHolder -->
+                  <div class="tabs__submenuItem">Decoded texts:&nbsp;<strong data-bind="text: encodingInfo().textsNeedDecoding ? 'yes' : 'no'" class="encodingCheck__submenuInfo"></strong>
+                    <button data-bind="click: tryAutoFixTexts" title="Try this if labels show weird characters." class="encodingCheck__autoFixButton">Try auto-fix texts</button>
+                  </div>
+                  <div class="tabs__submenuItem">&nbsp; Decoded names:&nbsp;<strong data-bind="text: encodingInfo().namesNeedDecoding ? 'yes' : 'no'" class="encodingCheck__submenuInfo"></strong>
+                    <button data-bind="click: tryAutoFixNames" title="Try this if element names show weird characters." class="encodingCheck__autoFixButton">Try auto-fix names</button>
+                  </div><!-- /ko -->
+            </div>
             <h2 class="encodingCheck__headline">
               Encoding issues in touchosc files may cause certain property values to look weird.
               <p>Such `suspicious` values are listed here together with possible fixes.</p>
               <p>If a suggested fix looks right, click it and press `Apply selected fixes` when you finished the list.</p>
               
             </h2>
-            <div>
-              <!-- ko if: suspiciousProperties().length-->
+            <div data-bind="if: suspiciousProperties().length">
               <table class="encodingCheck__table">
                 <thead>
                   <tr>
@@ -180,10 +179,8 @@
                   </tr>
                 </tbody>
               </table>
-              <!-- /ko-->
             </div>
-            <div>
-              <!-- ko if: fixedProperties().length-->
+            <div data-bind="if: fixedProperties().length">
               <table class="encodingCheck__table encodingCheck__table--fixes">
                 <caption>Applied Fixes</caption>
                 <thead>
@@ -207,7 +204,6 @@
                   </tr>
                 </tbody>
               </table>
-              <!-- /ko-->
             </div>
           </div><!-- /ko -->
           <!-- ko if: visualMode -->
@@ -229,7 +225,13 @@
                 <label>Default Channel:
                   <select data-bind="options: midiChannelOptions, value: defaultMidiChannel"></select>
                 </label><span data-bind="with: defaultMidiChannel">
-                  <button data-bind="click: $root.setGlobalChannel" title="Updates the MIDI channel of all (existing) controls">Apply to controls</button></span></span>
+                  <button data-bind="click: $root.setGlobalChannel" title="Updates the MIDI channel of all (existing) controls">Apply to controls</button></span></span><!-- ko with: $root.sourceFileHolder.encodingInfo() && $root.sourceFileHolder -->
+                  <div class="tabs__submenuItem">
+                    <button data-bind="click: tryAutoFixTexts" title="Try this if labels show weird characters." class="encodingCheck__autoFixButton">Try auto-fix texts</button>
+                  </div>
+                  <div class="tabs__submenuItem">
+                    <button data-bind="click: tryAutoFixNames" title="Try this if element names show weird characters." class="encodingCheck__autoFixButton">Try auto-fix names</button>
+                  </div><!-- /ko -->
             </div>
             <ul data-bind="fastForEach: $root.layoutHolder.tabPages" class="visual__tabPages">
               <li data-bind="click: $parent.currentTabPage, css: {'visual__tabPage--active': $data === $parent.currentTabPage()}, text: $data._name || ($index() + 1)" class="visual__tabPage"></li>
