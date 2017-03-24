@@ -5,7 +5,7 @@ html
             include _head
 
         block css
-            link(rel='stylesheet', href=resourceUrl('css/style.min.css'))
+            link(rel='stylesheet', href=resourceUrl('css/style.min.css', true))
 
         include _mixins
 
@@ -27,9 +27,9 @@ html
             script(src=resourceUrl('/js/lib/jquery-ui-1.12.1.custom/jquery-ui.min.js'))
             script(src=resourceUrl('/js/lib/touchpunch/jquery.ui.touch-punch.min.js'))
             script(src=resourceUrl('/js/lib/knockout/dist/knockout.js'))
-            script(src=resourceUrl('/js/requirejsAndConfig.js'))
+            script(src=resourceUrl('/js/requirejsAndConfig.js', true))
 
             if renderToFile
-                script(src=resourceUrl('/js/bundle.js'))
+                script(src=resourceUrl('/js/bundle.js', true))
 
         include _factory-helper

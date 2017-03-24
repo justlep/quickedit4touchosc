@@ -9,11 +9,11 @@
     <meta name="keywords" content="Editor, TouchOSC, Multiple, Control, MIDI, OSC, Config, Configuration, Setup, Visual, Layout, Properties, Channels">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="resources/images/favicon.png" size="32x32" type="image/png">
-    <link rel="stylesheet" href="resources/css/style.min.css">
+    <link rel="stylesheet" href="resources/css/style.min.css?j0ofc1ba">
   </head>
   <body>
     <header class="header">
-      <h1 class="header__headline"><a href="http://justlep.github.io/quickedit4touchosc/">QuickEdit for TouchOSC</a><span class="header__build">v0.0.9, built <span data-bind="text: prettyTimecode(1490392330295)"></span></span></h1>
+      <h1 class="header__headline"><a href="http://justlep.github.io/quickedit4touchosc/">QuickEdit for TouchOSC</a><span class="header__build">v0.0.9, built <span data-bind="text: prettyTimecode(1490396191606)"></span></span></h1>
       <!-- ko with: sourceFileHolder-->
       <label for="touchosc__file" data-bind="css: {'file__label--empty': !file()}" class="file__label file__label--empty"><span data-bind="text: file() ? ('File: ' + file()) : 'Click here to load a touchosc file...'">Click here to load a touchosc file...</span>
         <input id="touchosc__file" type="file" accept=".touchosc,.zip" data-bind="value: file" class="file__input">
@@ -320,31 +320,31 @@
       </script>
       
       
-            <script id="controlSvgTpl__1" type="text/html" data-typepattern="" class="svg__controlTemplate">
+            <script id="controlSvgTpl__82" type="text/html" data-typepattern="" class="svg__controlTemplate">
               <rect x="0" y="0" width="100%" height="100%" data-bind="style: {fill: colorCode}" class="svg__control"></rect>
             </script>
-            <script id="controlSvgTpl__2" type="text/html" data-typepattern="^(label|battery|time)" class="svg__controlTemplate">
+            <script id="controlSvgTpl__83" type="text/html" data-typepattern="^(label|battery|time)" class="svg__controlTemplate">
               <rect x="0" y="0" rx="4" ry="4" width="100%" height="100%" data-bind="style: {fill: ($data.props._background ? '#231C1C' : 'transparent'), 'stroke-width': 1, stroke: ($data.props._outline ? colorCode : 'transparent')}, css: {'svg__label--markedEmpty': (!$data.props._text &amp;&amp; !$data.props._background &amp;&amp; !$data.props._outline &amp;&amp; $parent.config.markEmptyLabels())}" class="svg__control"></rect>
               <text x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" dominant-baseline="middle" data-bind="svgLabel: true, text: (($data.getFixText &amp;&amp; $data.getFixText()) || $data.props._text), attr: {'font-size': $data.props._size, fill: colorCode}"></text>
             </script>
-            <script id="controlSvgTpl__3" type="text/html" data-typepattern="^(toggle|multitoggle)" class="svg__controlTemplate">
+            <script id="controlSvgTpl__84" type="text/html" data-typepattern="^(toggle|multitoggle)" class="svg__controlTemplate">
               <rect x="0" y="0" width="100%" height="100%" data-bind="style: {fill: '#444', opacity: 0.5}, attr: {rx: 5, ry: 5, stroke: colorCode, 'stroke-width': 2}" class="svg__control"></rect>
               <!-- ko if: $data.needsGrid-->
               <path data-bind="multiDivider: true, attr: {stroke: colorCode}" fill="none" style="stroke-width: 2px"></path>
               <!-- /ko-->
             </script>
-            <script id="controlSvgTpl__4" type="text/html" data-typepattern="^(push|multipush)" class="svg__controlTemplate">
+            <script id="controlSvgTpl__85" type="text/html" data-typepattern="^(push|multipush)" class="svg__controlTemplate">
               <rect x="0" y="0" width="100%" height="100%" data-bind="style: {fill: colorCode}, attr: {rx: 5, ry: 5}" class="svg__control"></rect>
               <!-- ko if: $data.needsGrid-->
               <path data-bind="multiDivider: true" fill="none" style="stroke: #222; stroke-width: 2px"></path>
               <!-- /ko-->
             </script>
-            <script id="controlSvgTpl__5" type="text/html" data-typepattern="^(fader|multifader)" class="svg__controlTemplate">
+            <script id="controlSvgTpl__86" type="text/html" data-typepattern="^(fader|multifader)" class="svg__controlTemplate">
               <rect x="0" y="0" width="100%" height="100%" data-bind="style: {fill: '#444', opacity: 0.5}, attr: {rx: 3, ry: 3, stroke: colorCode, 'stroke-width': 2}" class="svg__control"></rect>
               <rect rx="3" ry="3" data-bind="attr: {fill: colorCode}, faderHandle: false"></rect>
               <path data-bind="faderHandle: true" fill="none" style="stroke: #222; stroke-width: 2px"></path>
             </script>
-            <script id="controlSvgTpl__6" type="text/html" data-typepattern="^xy|multixy" class="svg__controlTemplate">
+            <script id="controlSvgTpl__87" type="text/html" data-typepattern="^xy|multixy" class="svg__controlTemplate">
               <rect x="0" y="0" width="100%" height="100%" data-bind="style: {fill: '#444', opacity: 0.5}, attr: {rx: 3, ry: 3, stroke: colorCode, 'stroke-width': 2}" class="svg__control"></rect>
               <line stroke-width="2" y1="0" y2="100%" data-bind="attr: {stroke: colorCode, x1: ($data.props._inverted_x ? '90%' : '10%'), x2: ($data.props._inverted_x ? '90%' : '10%')}"></line>
               <line stroke-width="2" x1="0" x2="100%" data-bind="attr: {stroke: colorCode, y1: ($data.props._inverted_y ? '90%' : '10%'), y2: ($data.props._inverted_y ? '90%' : '10%')}"></line>
@@ -353,16 +353,16 @@
               <circle r="7%" fill="transparent" stroke-width="1" data-bind="attr: {stroke: colorCode, cx: ($data.props._inverted_x? '90%' : '10%'), cy: ($data.props._inverted_y? '90%' : '10%')}"></circle>
               <!-- /ko-->
             </script>
-            <script id="controlSvgTpl__7" type="text/html" data-typepattern="^encoder" class="svg__controlTemplate">
+            <script id="controlSvgTpl__88" type="text/html" data-typepattern="^encoder" class="svg__controlTemplate">
               <circle cx="50%" cy="50%" r="50%" fill="#333" stroke-width="4" data-bind="attr: {stroke: colorCode}" class="svg__control svg__encoder"></circle>
               <circle cx="50%" cy="50%" r="40%" stroke-width="1" fill="transparent" data-bind="attr: {stroke: colorCode}" class="svg__control"></circle>
             </script>
-            <script id="controlSvgTpl__8" type="text/html" data-typepattern="^rotary" class="svg__controlTemplate">
+            <script id="controlSvgTpl__89" type="text/html" data-typepattern="^rotary" class="svg__controlTemplate">
               <circle cx="50%" cy="50%" r="50%" stroke="#aaa" stroke-width="2" stroke-dasharray="5,1" data-bind="attr: {fill: colorCode}" class="svg__control"></circle>
               <path stroke="#000" fill="transparent" opacity="0.4" data-bind="rotaryHandle:true"></path>
               <line x1="50%" y1="50%" stroke-width="5" stroke="#fff" data-bind="rotaryHandle:false"></line>
             </script>
-            <script id="controlSvgTpl__9" type="text/html" data-typepattern="^led" class="svg__controlTemplate">
+            <script id="controlSvgTpl__90" type="text/html" data-typepattern="^led" class="svg__controlTemplate">
               <circle cx="50%" cy="50%" r="50%" data-bind="attr: {fill: colorCode}" class="svg__control svg__led"></circle>
             </script>
       <script id="controlEditorTabsTpl" type="text/html">
@@ -662,7 +662,7 @@
     <script src="resources/js/lib/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
     <script src="resources/js/lib/touchpunch/jquery.ui.touch-punch.min.js"></script>
     <script src="resources/js/lib/knockout/dist/knockout.js"></script>
-    <script src="resources/js/requirejsAndConfig.js"></script>
-    <script src="resources/js/bundle.js"></script>
+    <script src="resources/js/requirejsAndConfig.js?j0ofc1ba"></script>
+    <script src="resources/js/bundle.js?j0ofc1ba"></script>
   </body>
 </html>

@@ -15,7 +15,8 @@ const path = require('path'),
     ROUTES_BASE_PATH = path.join(__dirname, 'routes'),
     RESOURCES_BASE_URL = '/resources/',
     LIVE_RELOAD_PORT = pkg.config.livereloadPort,
-    RENDER_TO_FILE_URL_PARAM = pkg.config.renderToFileUrlParam;
+    RENDER_TO_FILE_URL_PARAM = pkg.config.renderToFileUrlParam,
+    ANTI_CACHE_PARAM_VALUE = Date.now().toString(36);
 
 var app = express(),
     morganLogger = require('morgan')('dev', {
@@ -62,13 +63,17 @@ app.use('/', (req, res, next) => {
     }
     _.extend(res.locals, {
         renderToFile: req.query[RENDER_TO_FILE_URL_PARAM] !== undefined,
-        resourceUrl: function (resourcePathRelativeToPublic) {
-            var resource = resourcePathRelativeToPublic.replace(/^\//,''),
-                depth = (req.path.replace(/^\//,'').match(/\//g) || []).length,
-                relativeRoot = depth ? new Array(depth+1).join('../') : '';
+        resourceUrl: function(resourcePathRelativeToPublic, appendAntiCacheHash) {
+            var resource = resourcePathRelativeToPublic.replace(/^\//, ''),
+                depth = (req.path.replace(/^\//, '').match(/\//g) || []).length,
+                relativeRoot = depth ? new Array(depth + 1).join('../') : '',
+                completeUrl = `${relativeRoot}resources/${resource}`;
 
-            // return `/resources/${resource}`;
-            return `${relativeRoot}resources/${resource}`;
+            if (appendAntiCacheHash) {
+                completeUrl += (completeUrl.includes('?') ? '&' : '?') + ANTI_CACHE_PARAM_VALUE;
+            }
+
+            return completeUrl;
         }
     });
 
