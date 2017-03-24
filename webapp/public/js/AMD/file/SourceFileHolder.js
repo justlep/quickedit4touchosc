@@ -5,7 +5,8 @@ define(['knockout', 'underscore', 'jquery', 'LOG', 'util', 'zip', 'AMD/file/Json
     'use strict';
 
     var instance,
-        OSC_FILE_HTML_INPUT_SELECTOR = '#touchosc__file';
+        OSC_FILE_HTML_INPUT_SELECTOR = '#touchosc__file',
+        CHANGE_LOSS_WARNING = 'All changes will be lost. Do anyway?';
 
     /**
      * @constructor
@@ -13,7 +14,9 @@ define(['knockout', 'underscore', 'jquery', 'LOG', 'util', 'zip', 'AMD/file/Json
     function SourceFileHolder() {
         var self = this,
             jsonXmlConverter = JsonXmlConverter.getInstance(),
-            _file = ko.observable();
+            _file = ko.observable(),
+            _invertTextsNeedEncoding = ko.observable(false),
+            _invertNamesNeedEncoding = ko.observable(false);
 
         this.file = ko.computed({
             read: _file,
@@ -28,12 +31,29 @@ define(['knockout', 'underscore', 'jquery', 'LOG', 'util', 'zip', 'AMD/file/Json
         this.error = ko.observable().extend({deferred: true});
         this.encodingInfo = ko.observable();
 
+        this.tryAutoFixTexts = function() {
+            var xml = self.xml();
+            if (xml && confirm(CHANGE_LOSS_WARNING)) {
+                _invertTextsNeedEncoding(!_invertTextsNeedEncoding());
+                self.xml(xml + ' ');
+            }
+        };
+        this.tryAutoFixNames = function() {
+            var xml = self.xml();
+            if (xml && confirm(CHANGE_LOSS_WARNING)) {
+                _invertNamesNeedEncoding(!_invertNamesNeedEncoding());
+                self.xml(xml + ' ');
+            }
+        };
+
         /**
          * Updates the `xml` observable using the XMl from the selected TouchOSC file.
          */
         this.file.subscribe(function(filename) {
             self.xml('');
             self.error('');
+            _invertTextsNeedEncoding(false);
+            _invertNamesNeedEncoding(false);
 
             var file = $(OSC_FILE_HTML_INPUT_SELECTOR)[0].files[0];
             if (!file) {
@@ -80,12 +100,18 @@ define(['knockout', 'underscore', 'jquery', 'LOG', 'util', 'zip', 'AMD/file/Json
                 json = xml && jsonXmlConverter.xml2json(xml);
 
             if (json && xml) {
-                self.encodingInfo({
-                    namesNeedDecoding: (/ name="[a-z0-9\-]+={1,2}"/i).test(xml),
-                    textsNeedDecoding: (/ text="[a-z0-9\-]+={1,2}"/i).test(xml)
-                });
+                var encodingInfo = {
+                        namesNeedDecoding: (/ name="[a-z0-9\-]+={1,2}"/i).test(xml),
+                        textsNeedDecoding: (/ text="[a-z0-9\-]+={1,2}"/i).test(xml)
+                    },
+                    encodingInfoForSanitizer = _.extend({}, encodingInfo, {
+                        namesNeedDecoding: encodingInfo.namesNeedDecoding !== _invertNamesNeedEncoding.peek(),
+                        textsNeedDecoding: encodingInfo.textsNeedDecoding !== _invertTextsNeedEncoding.peek()
+                    });
 
-                JsonSanitizer.sanitizeJsonAfterImport(json, self.encodingInfo.peek());
+                self.encodingInfo(encodingInfo);
+
+                JsonSanitizer.sanitizeJsonAfterImport(json, encodingInfoForSanitizer);
 
                 _.each(json.layout.tabpage, function(tabPage) {
                     tabPage.control = _.map(tabPage.control, ControlSupport.createControlByJson);

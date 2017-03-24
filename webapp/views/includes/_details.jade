@@ -24,9 +24,3 @@
                 th Custom Height
                 td(data-bind="text: $data._h || '-'")
             // /ko
-            tr
-                th base64 names:
-                td(data-bind="text: $root.sourceFileHolder.encodingInfo().namesNeedDecoding ? 'probably' : 'unlikely'")
-            tr
-                th base64 texts:
-                td(data-bind="text: $root.sourceFileHolder.encodingInfo().textsNeedDecoding ? 'probably' : 'unlikely'")

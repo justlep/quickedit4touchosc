@@ -16,6 +16,8 @@ div.visual(data-bind="with: visual.isEnabled() && visual")
             span(data-bind="with: defaultMidiChannel")
                 button(data-bind="click: $root.setGlobalChannel", title="Updates the MIDI channel of all (existing) controls") Apply to controls
 
+        +encodingAutoFixSubmenuItems(true)
+
     ul.visual__tabPages(data-bind="fastForEach: $root.layoutHolder.tabPages")
         li.visual__tabPage(data-bind="click: $parent.currentTabPage, " +
                                     "css: {'visual__tabPage--active': $data === $parent.currentTabPage()}, " +

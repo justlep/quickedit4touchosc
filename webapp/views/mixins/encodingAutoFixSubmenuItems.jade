@@ -1,0 +1,13 @@
+mixin encodingAutoFixSubmenuItems(buttonsOnly)
+    <!-- ko with: $root.sourceFileHolder.encodingInfo() && $root.sourceFileHolder -->
+    .tabs__submenuItem
+        if (!buttonsOnly)
+            | Decoded texts:&nbsp;
+            strong.encodingCheck__submenuInfo(data-bind="text: encodingInfo().textsNeedDecoding ? 'yes' : 'no'")
+        button.encodingCheck__autoFixButton(data-bind="click: tryAutoFixTexts", title="Try this if labels show weird characters.") Try auto-fix texts
+    .tabs__submenuItem
+        if (!buttonsOnly)
+            | &nbsp; Decoded names:&nbsp;
+            strong.encodingCheck__submenuInfo(data-bind="text: encodingInfo().namesNeedDecoding ? 'yes' : 'no'")
+        button.encodingCheck__autoFixButton(data-bind="click: tryAutoFixNames", title="Try this if element names show weird characters.") Try auto-fix names
+    <!-- /ko -->
