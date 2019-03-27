@@ -44,7 +44,7 @@
     "jade": "~1.11.0",
     "less-plugin-autoprefix": "~1.5.1",
     "load-grunt-config": "~0.19.2",
-    "morgan": "~1.8.1",
+    "morgan": "~1.9.1",
     "time-grunt": "~1.4.0",
     "underscore": "~1.8.3"
   },
